@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     transferCodeDisplay.textContent = codeSnippet;
 
     // VietQR Open API live rendering
-    const qrUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${grandTotal}&addInfo=${encodeURIComponent(codeSnippet)}&accountName=${encodeURIComponent('LUONG THE BAO')}`;
+    const qrUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${grandTotal}&addInfo=${encodeURIComponent(codeSnippet)}&accountName=${encodeURIComponent('VLU MASTER STUDENTS')}`;
     vietqrImage.src = qrUrl;
   }
 
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: "VIETQR_NAPAS247",
         bankName: "MB Bank",
         bankAccount: "0988888888",
-        accountOwner: "TS. LUONG THE BAO",
+        accountOwner: "VLU MASTER STUDENTS",
         transferCode: transferCodeDisplay.textContent,
         status: "PAID_CONFIRMED"
       },
