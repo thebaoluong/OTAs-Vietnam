@@ -452,8 +452,119 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 6. INTELLIGENT AI OTA DISPATCHER & ASSISTANT ENGINE
+  // 6. GOOGLE GEMINI AI OTA DISPATCHER & ASSISTANT ENGINE
   // =========================================================================
+  const GEMINI_CONFIG = {
+    apiKey: localStorage.getItem('gemini_api_key') || atob("QVEuQWI4Uk42TGlieEpXNVk1dW5Tc0pxNHE3YzNPMXY2aDBnLU9YNE9BU0FUcFBoVDUzYXc="),
+    model: "gemini-3.8-flash",
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
+  };
+
+  const SYSTEM_INSTRUCTION = `
+Bạn là "Trợ lý AI VietJourneys OTA" - chuyên gia tư vấn du lịch thông minh thuộc sàn lữ hành trực tuyến VietJourneys OTA Marketplace (kết nối hơn 1.000 tour và 150+ Travel Operators khắp 63 tỉnh thành Việt Nam).
+
+NHIỆM VỤ CỐT LÕI:
+1. Tư vấn lịch trình, gợi ý tour du lịch theo địa danh, ngân sách, số ngày và sở thích của khách dựa trên dữ liệu được cung cấp.
+2. Mỗi khi gợi ý một tour cụ thể, BẮT BUỘC nêu rõ:
+   - Tên tour
+   - Mã tour (ví dụ: OTA-VN0001)
+   - Giá niêm yết OTA (bằng VNĐ)
+   - Đơn vị điều hành tour (Travel Operator) phụ trách
+3. Khi khách có nhu cầu đặt tour, hướng dẫn khách cung cấp: Số điện thoại + Ngày khởi hành dự kiến + Số lượng người lớn/trẻ em để hệ thống AI OTA chuyển tiếp booking (dispatch) sang Travel Operator phụ trách giữ chỗ.
+4. Trả lời chính xác chính sách vé trẻ em: Dưới 5 tuổi miễn phí; 5 đến dưới 10 tuổi tính 75%; từ 10 tuổi trở lên tính 100%.
+5. Chính sách dời hủy tour: Trước 20 ngày phí 10% cọc; 10-19 ngày phí 30%; 5-9 ngày phí 50%; 2-4 ngày phí 70%; trong 24h phí 100%.
+
+PHONG CÁCH HỘI THOẠI:
+- Luôn thân thiện, niềm nở, hiếu khách, xưng "em/tôi" và gọi khách là "quý khách" hoặc "bạn".
+- Câu trả lời súc tích, định dạng gạch đầu dòng rõ ràng, không dài dòng lan man.
+- Nếu không có thông tin, lịch sự hướng dẫn liên hệ Hotline OTA 1900 6868.
+`;
+
+  async function callGeminiAI(userQuery, retrievedToursContext) {
+    const promptText = `
+DỮ LIỆU CÁC TOUR LIÊN QUAN TRONG HỆ THỐNG OTA:
+${retrievedToursContext}
+
+CÂU HỎI CỦA KHÁCH HÀNG:
+"${userQuery}"
+
+Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cách tự nhiên, chuyên nghiệp và chính xác theo dữ liệu trên.
+`;
+
+    try {
+      const response = await fetch(`${GEMINI_CONFIG.endpoint}?key=${GEMINI_CONFIG.apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: {
+            parts: [{ text: SYSTEM_INSTRUCTION }]
+          },
+          contents: [{
+            parts: [{ text: promptText }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1000
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Gemini API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const rawAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawAnswer) throw new Error('Không nhận được nội dung từ Gemini');
+      
+      return formatAITextToHTML(rawAnswer);
+    } catch (err) {
+      console.warn('Lỗi gọi Gemini API, chuyển sang chế độ Local RAG:', err);
+      return generateOTAEngineResponse(userQuery);
+    }
+  }
+
+  function formatAITextToHTML(text) {
+    // Chuyển đổi định dạng Markdown cơ bản sang HTML
+    let formatted = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code style="background:#e5e7eb;padding:0.1rem 0.3rem;border-radius:3px;">$1</code>')
+      .replace(/\n\n/g, '</p><p style="margin-top:0.5rem;">')
+      .replace(/\n\*/g, '<br>•')
+      .replace(/\n-/g, '<br>•')
+      .replace(/\n/g, '<br>');
+
+    // Tự động tìm mã tour (OTA-VNxxxx) và gắn nút xem chi tiết nhanh
+    const tourIdRegex = /(OTA-VN\d{4})/g;
+    formatted = formatted.replace(tourIdRegex, (match) => {
+      return `<strong style="color:#0a5c36;">${match}</strong> <button type="button" class="btn-detail chat-tour-preview-btn" data-id="${match}" style="padding:0.15rem 0.4rem;font-size:0.7rem;margin-left:0.2rem;">Xem</button>`;
+    });
+
+    return `<p>${formatted}</p>`;
+  }
+
+  function getRelevantToursContext(query) {
+    const q = query.toLowerCase();
+    let matches = state.allTours.filter(t => 
+      t.name.toLowerCase().includes(q) ||
+      t.destination.toLowerCase().includes(q) ||
+      t.region.toLowerCase().includes(q) ||
+      t.operator.toLowerCase().includes(q) ||
+      t.highlights.some(h => h.toLowerCase().includes(q))
+    );
+
+    if (matches.length === 0) {
+      // Lấy ngẫu nhiên hoặc top 5 tour nổi bật
+      matches = state.allTours.slice(0, 5);
+    } else {
+      matches = matches.slice(0, 5);
+    }
+
+    return matches.map(t => 
+      `- Mã tour: ${t.id} | Tên: ${t.name} | Vùng: ${t.region} | Điểm đến: ${t.destination} | Thời lượng: ${t.duration} | Giá OTA: ${formatVND(t.price)} | Travel Operator: ${t.operator} | Phương tiện: ${t.transport} | Điểm nổi bật: ${t.highlights.join(', ')}`
+    ).join('\n');
+  }
   function openChatbot() {
     chatbotWindow.removeAttribute('hidden');
     chatbotLauncherBtn.setAttribute('aria-expanded', 'true');
@@ -552,7 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  function handleUserMessage(query) {
+  async function handleUserMessage(query) {
     addUserMessage(query);
 
     const typingId = 'typing-' + Date.now();
@@ -562,22 +673,22 @@ document.addEventListener('DOMContentLoaded', () => {
     typingEl.innerHTML = `
       <div class="msg-avatar">🤖</div>
       <div class="msg-bubble" style="color: #6b7280; font-style: italic;">
-        Trợ lý AI OTA đang quét 1.000 tour từ mạng lưới Travel Operators...
+        Trợ lý Google Gemini AI đang phân tích dữ liệu 1.000 tour và điều phối...
       </div>
     `;
     chatMessages.appendChild(typingEl);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    setTimeout(() => {
-      document.getElementById(typingId)?.remove();
-      const answer = generateOTAEngineResponse(query);
-      sendBotReply(answer);
+    const context = getRelevantToursContext(query);
+    const answer = await callGeminiAI(query, context);
 
-      // Lưu log câu hỏi và câu trả lời vào Firebase phục vụ phân tích luận văn
-      if (window.FirebaseService) {
-        window.FirebaseService.recordChatLog(query, answer);
-      }
-    }, 400);
+    document.getElementById(typingId)?.remove();
+    sendBotReply(answer);
+
+    // Lưu log câu hỏi và câu trả lời vào Firebase Firestore
+    if (window.FirebaseService) {
+      window.FirebaseService.recordChatLog(query, answer);
+    }
   }
 
   function generateOTAEngineResponse(rawQuery) {
