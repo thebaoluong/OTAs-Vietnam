@@ -41,6 +41,9 @@
             <span class="hotline-number">1900 6868</span>
           </div>
         </a>
+        <button type="button" class="btn-admin-nav" id="openAdminTopBtn" title="Cổng Quản Trị & Báo Cáo Doanh Thu (Dành cho Giảng viên / Admin)" style="background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.25); padding: 0.55rem 0.9rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+          <span>🔒 Quản Trị OTA</span>
+        </button>
         <button type="button" class="btn-ai-trigger" id="openChatbotTopBtn" title="Mở Trợ lý Du lịch AI">
           <span class="sparkle">✨</span> Trợ Lý AI OTA
         </button>
@@ -427,8 +430,8 @@
           <button type="button" class="btn-chat-footer" id="openChatbotFooterBtn">
             <span>💬 Trò Chuyện Cùng Trợ Lý AI OTA</span>
           </button>
-          <button type="button" class="btn-export-excel" id="exportBookingsExcelBtn" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 0.6rem 0.9rem; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.2s;">
-            <span>🔒 [Dành Cho Giảng Viên / Admin] Xuất File Excel (Cần PIN)</span>
+          <button type="button" class="btn-admin-portal" id="openAdminDashboardBtn" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #38bdf8; border: 1px solid #38bdf8; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(15,23,42,0.4); transition: all 0.2s;">
+            <span>📊 [Admin Portal] Báo Cáo Doanh Thu & Dữ Liệu Đặt Tour</span>
           </button>
         </div>
       </div>
@@ -644,6 +647,128 @@
         <div class="success-actions">
           <button type="button" class="btn-primary" id="btnBackToTours">Hoàn Tất & Khám Phá Thêm Tour</button>
         </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ACCESSIBLE MODAL: ADMIN DASHBOARD & REVENUE ANALYTICS DIALOG -->
+  <dialog id="adminDashboardDialog" class="tour-modal admin-modal" aria-labelledby="adminModalTitle" closedby="any">
+    <div class="modal-dialog-content admin-dialog-content">
+      <button type="button" class="modal-close-btn" id="adminCloseBtn" aria-label="Đóng bảng quản trị">✕</button>
+
+      <!-- Admin Header -->
+      <div class="admin-header-strip">
+        <div class="admin-badges-row">
+          <span class="admin-badge role">🔒 DÀNH CHO GIẢNG VIÊN / QUẢN TRỊ VIÊN</span>
+          <span class="admin-badge live-sync">🟢 Cloud Firestore: website-otas-vietnam</span>
+        </div>
+        <h2 id="adminModalTitle" class="admin-modal-title">Trung Tâm Điều Hành & Báo Cáo Doanh Thu OTA</h2>
+        <p class="admin-modal-subtitle">Theo dõi số liệu thực nghiệm học viên cao học, lưu lượng đặt tour và thống kê doanh thu lữ hành thời gian thực.</p>
+      </div>
+
+      <!-- Executive KPI Cards -->
+      <div class="admin-kpi-grid">
+        <div class="admin-kpi-card revenue">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-info">
+            <span class="kpi-label">Tổng Doanh Thu Lữ Hành</span>
+            <strong class="kpi-value" id="kpiTotalRevenue">0 đ</strong>
+            <span class="kpi-subtext">Thanh toán chuyển khoản VietQR Napas</span>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card bookings">
+          <div class="kpi-icon">📋</div>
+          <div class="kpi-info">
+            <span class="kpi-label">Tổng Số Lượt Đặt Tour</span>
+            <strong class="kpi-value" id="kpiTotalBookings">0 đơn</strong>
+            <span class="kpi-subtext">Đã ghi nhận trên Cloud Firestore</span>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card guests">
+          <div class="kpi-icon">👥</div>
+          <div class="kpi-info">
+            <span class="kpi-label">Tổng Lượng Du Khách</span>
+            <strong class="kpi-value" id="kpiTotalGuests">0 du khách</strong>
+            <span class="kpi-subtext">Bao gồm khách đoàn & cá nhân</span>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card aov">
+          <div class="kpi-icon">📈</div>
+          <div class="kpi-info">
+            <span class="kpi-label">Giá Trị Trung Bình / Đơn</span>
+            <strong class="kpi-value" id="kpiAOV">0 đ</strong>
+            <span class="kpi-subtext">Chỉ số AOV (Average Order Value)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regional & Operator Analytics Breakdown -->
+      <div class="admin-analytics-grid">
+        <div class="admin-analytics-card">
+          <h3 class="analytics-card-title">🗺️ Cơ Cấu Doanh Thu Theo Vùng Miền</h3>
+          <div class="region-bars-list" id="adminRegionBars">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="admin-analytics-card">
+          <h3 class="analytics-card-title">🏛️ Top Nhà Điều Hành (Travel Operators) Nhận Nhiều Đơn</h3>
+          <div class="operator-list" id="adminOperatorList">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Toolbar & Action Buttons -->
+      <div class="admin-table-toolbar">
+        <div class="admin-search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="adminSearchInput" class="admin-search-input" placeholder="Tìm theo tên khách, SĐT, email, mã đơn hoặc tên tour...">
+        </div>
+
+        <div class="admin-toolbar-actions">
+          <button type="button" class="btn-admin-action sync" id="btnSyncAdminData" title="Cập nhật dữ liệu từ đám mây">
+            <span>🔄 Làm Mới Dữ Liệu</span>
+          </button>
+          <button type="button" class="btn-admin-action print" id="btnPrintAdminReport" title="In hoặc xuất PDF báo cáo">
+            <span>🖨️ In Báo Cáo / Xuất PDF</span>
+          </button>
+          <button type="button" class="btn-admin-action excel" id="btnExportExcelFromAdmin" title="Tải file Excel / CSV về máy">
+            <span>📥 Tải File Excel / CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Detailed Customer Bookings Table -->
+      <div class="admin-table-container">
+        <table class="admin-data-table" id="adminBookingsTable">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Mã Đơn</th>
+              <th>Thời Gian</th>
+              <th>Tên Khách Hàng</th>
+              <th>Số Điện Thoại</th>
+              <th>Email Nhận Vé</th>
+              <th>Tên Tour Đã Đặt</th>
+              <th>Nhà Điều Hành</th>
+              <th>Ngày Đi</th>
+              <th>Số Khách</th>
+              <th>Tổng Tiền</th>
+              <th>Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody id="adminBookingsTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admin-footer-note">
+        <span>🔒 Báo cáo bảo mật phục vụ công tác giảng dạy & nghiên cứu Khoa Du Lịch - ĐH Văn Lang (VLU). Dữ liệu được mã hóa thời gian thực.</span>
       </div>
     </div>
   </dialog>

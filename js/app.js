@@ -1069,81 +1069,284 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
   }
 
   // =========================================================================
-  // 6. EXPORT BOOKINGS TO EXCEL / CSV FOR RESEARCH & MANAGEMENT (ADMIN ONLY)
+  // 6. ADMIN DASHBOARD & REVENUE ANALYTICS PORTAL (EXECUTIVE REPORTING)
   // =========================================================================
-  const exportBookingsExcelBtn = document.getElementById('exportBookingsExcelBtn');
-  if (exportBookingsExcelBtn) {
-    exportBookingsExcelBtn.addEventListener('click', async () => {
-      // Xác thực bảo mật Admin / Giảng viên để bảo vệ thông tin cá nhân của học viên
-      const enteredPin = prompt("🔐 XÁC THỰC QUYỀN QUẢN TRỊ VIÊN / GIẢNG VIÊN:\n\nTính năng này trích xuất toàn bộ dữ liệu Họ tên, SĐT và Email của học viên/du khách.\nVui lòng nhập Mã PIN Admin để tải file (Mã mặc định: vlu2026):");
-      
-      if (enteredPin === null) return; // Người dùng bấm Hủy
+  const adminDashboardDialog = document.getElementById('adminDashboardDialog');
+  const adminCloseBtn = document.getElementById('adminCloseBtn');
+  const openAdminTopBtn = document.getElementById('openAdminTopBtn');
+  const openAdminDashboardBtn = document.getElementById('openAdminDashboardBtn');
+
+  const kpiTotalRevenue = document.getElementById('kpiTotalRevenue');
+  const kpiTotalBookings = document.getElementById('kpiTotalBookings');
+  const kpiTotalGuests = document.getElementById('kpiTotalGuests');
+  const kpiAOV = document.getElementById('kpiAOV');
+
+  const adminRegionBars = document.getElementById('adminRegionBars');
+  const adminOperatorList = document.getElementById('adminOperatorList');
+  const adminBookingsTableBody = document.getElementById('adminBookingsTableBody');
+  const adminSearchInput = document.getElementById('adminSearchInput');
+
+  const btnSyncAdminData = document.getElementById('btnSyncAdminData');
+  const btnPrintAdminReport = document.getElementById('btnPrintAdminReport');
+  const btnExportExcelFromAdmin = document.getElementById('btnExportExcelFromAdmin');
+
+  let currentAdminBookings = [];
+  let isAdminAuthenticated = false;
+
+  async function checkAdminAuthAndOpen() {
+    if (!isAdminAuthenticated) {
+      const enteredPin = prompt("🔐 XÁC THỰC QUYỀN QUẢN TRỊ VIÊN / GIẢNG VIÊN:\n\nTruy cập Báo cáo Doanh thu & Dữ liệu Du khách.\nVui lòng nhập Mã PIN Admin (Mặc định: vlu2026):");
+      if (enteredPin === null) return;
       if (enteredPin.trim() !== "vlu2026" && enteredPin.trim() !== "admin123") {
-        alert("❌ MÃ PIN KHÔNG CHÍNH XÁC!\n\nTruy cập bị từ chối. Tính năng này chỉ dành riêng cho Giảng viên / Quản trị viên để bảo mật dữ liệu học viên.");
+        alert("❌ MÃ PIN KHÔNG CHÍNH XÁC!\n\nTruy cập bị từ chối.");
+        return;
+      }
+      isAdminAuthenticated = true;
+    }
+
+    adminDashboardDialog.showModal();
+    await loadAndRenderAdminData();
+  }
+
+  if (openAdminTopBtn) openAdminTopBtn.addEventListener('click', checkAdminAuthAndOpen);
+  if (openAdminDashboardBtn) openAdminDashboardBtn.addEventListener('click', checkAdminAuthAndOpen);
+  if (adminCloseBtn) adminCloseBtn.addEventListener('click', () => adminDashboardDialog.close());
+
+  async function loadAndRenderAdminData() {
+    let bookings = [];
+
+    // 1. Fetch from Firestore if connected
+    if (window.firebase && firebase.apps && firebase.apps.length) {
+      try {
+        const snapshot = await firebase.firestore().collection('bookings').orderBy('createdAt', 'desc').limit(200).get();
+        snapshot.forEach(doc => {
+          bookings.push({ id: doc.id, ...doc.data() });
+        });
+      } catch (err) {
+        console.warn('Lỗi đọc Firestore Admin:', err);
+      }
+    }
+
+    // 2. Fetch from LocalStorage fallback
+    const local = localStorage.getItem('vietjourneys_bookings');
+    if (local) {
+      try {
+        const localItems = JSON.parse(local);
+        localItems.forEach(item => {
+          if (!bookings.some(b => (b.bookingCode && b.bookingCode === item.bookingCode) || (b.id && b.id === item.id))) {
+            bookings.push(item);
+          }
+        });
+      } catch (e) {}
+    }
+
+    // 3. Fallback mock data if empty so admin always sees analytical structure
+    if (!bookings.length) {
+      bookings = [
+        {
+          bookingCode: "VJ10294",
+          createdAt: "2026-10-30 08:30:15",
+          customer: { fullName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", specialNotes: "Ăn chay 1 người" },
+          tourName: "Khám Phá Sa Pa - Đỉnh Fansipan - Bản Cát Cát 3N2Đ",
+          region: "Miền Bắc",
+          operator: "Sa Pa Eco-Tours Vietnam",
+          travelDate: "2026-11-05",
+          guestsCount: 2,
+          unitPrice: 2850000,
+          totalAmount: 5700000,
+          payment: { method: "VIETQR_NAPAS247", status: "PAID_CONFIRMED" }
+        },
+        {
+          bookingCode: "VJ10295",
+          createdAt: "2026-10-30 09:15:20",
+          customer: { fullName: "Trần Thị Mai Hương", phone: "0987654321", email: "huong.tran@gmail.com", specialNotes: "Đoàn có 2 trẻ em" },
+          tourName: "Du Thuyền Vịnh Hạ Long 5 Sao 2N1Đ",
+          region: "Miền Bắc",
+          operator: "Halong Luxury Cruises",
+          travelDate: "2026-11-12",
+          guestsCount: 4,
+          unitPrice: 3200000,
+          totalAmount: 12800000,
+          payment: { method: "VIETQR_NAPAS247", status: "PAID_CONFIRMED" }
+        },
+        {
+          bookingCode: "VJ10296",
+          createdAt: "2026-10-30 09:45:00",
+          customer: { fullName: "Lê Hoàng Long", phone: "0903123456", email: "long.le@vlu.edu.vn", specialNotes: "Học viên cao học du lịch" },
+          tourName: "Hành Trình Di Sản Miền Trung: Đà Nẵng - Hội An 4N3Đ",
+          region: "Miền Trung",
+          operator: "Danang Heritage Travel",
+          travelDate: "2026-11-20",
+          guestsCount: 3,
+          unitPrice: 4500000,
+          totalAmount: 13500000,
+          payment: { method: "VIETQR_NAPAS247", status: "PAID_CONFIRMED" }
+        },
+        {
+          bookingCode: "VJ10297",
+          createdAt: "2026-10-30 10:10:30",
+          customer: { fullName: "Phạm Quốc Tuấn", phone: "0934567890", email: "tuan.pham@outlook.com", specialNotes: "Trải nghiệm cà phê Robusta" },
+          tourName: "Đại Ngàn Tây Nguyên: Buôn Ma Thuột - Hồ Lắk 3N2Đ",
+          region: "Tây Nguyên",
+          operator: "Tay Nguyen Discovery Tours",
+          travelDate: "2026-11-15",
+          guestsCount: 2,
+          unitPrice: 2950000,
+          totalAmount: 5900000,
+          payment: { method: "VIETQR_NAPAS247", status: "PAID_CONFIRMED" }
+        }
+      ];
+    }
+
+    currentAdminBookings = bookings;
+    renderAdminKPIs(bookings);
+    renderAdminAnalytics(bookings);
+    renderAdminTable(bookings);
+  }
+
+  function renderAdminKPIs(bookings) {
+    let totalRev = 0;
+    let totalGuests = 0;
+    const totalCount = bookings.length;
+
+    bookings.forEach(b => {
+      totalRev += (b.totalAmount || 0);
+      totalGuests += (b.guestsCount || 1);
+    });
+
+    const aov = totalCount > 0 ? Math.round(totalRev / totalCount) : 0;
+
+    kpiTotalRevenue.textContent = formatVND(totalRev);
+    kpiTotalBookings.textContent = `${totalCount} đơn`;
+    kpiTotalGuests.textContent = `${totalGuests} du khách`;
+    kpiAOV.textContent = formatVND(aov);
+  }
+
+  function renderAdminAnalytics(bookings) {
+    // 1. Regional Breakdown
+    const regionTotals = {};
+    let grandTotal = 0;
+
+    bookings.forEach(b => {
+      const reg = b.region || "Miền Bắc";
+      const amt = b.totalAmount || 0;
+      regionTotals[reg] = (regionTotals[reg] || 0) + amt;
+      grandTotal += amt;
+    });
+
+    if (grandTotal === 0) grandTotal = 1;
+
+    adminRegionBars.innerHTML = Object.entries(regionTotals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([region, amt]) => {
+        const pct = Math.round((amt / grandTotal) * 100);
+        return `
+          <div class="region-bar-item">
+            <div class="bar-meta">
+              <span>📍 ${region}</span>
+              <span>${formatVND(amt)} (${pct}%)</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    // 2. Operator Breakdown
+    const operatorCounts = {};
+    bookings.forEach(b => {
+      const op = b.operator || "Travel Operator";
+      operatorCounts[op] = (operatorCounts[op] || 0) + (b.totalAmount || 0);
+    });
+
+    adminOperatorList.innerHTML = Object.entries(operatorCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([op, amt]) => `
+        <div class="operator-item">
+          <span class="operator-name">🏛️ ${op}</span>
+          <span class="operator-stats">${formatVND(amt)}</span>
+        </div>
+      `).join('');
+  }
+
+  function renderAdminTable(bookings) {
+    if (!bookings.length) {
+      adminBookingsTableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding: 2rem; color: #64748b;">Chưa có đơn đặt tour nào được ghi nhận.</td></tr>`;
+      return;
+    }
+
+    adminBookingsTableBody.innerHTML = bookings.map((b, idx) => {
+      const cust = b.customer || {};
+      const pay = b.payment || {};
+      return `
+        <tr>
+          <td><strong>#${idx + 1}</strong></td>
+          <td><strong style="color: #2563eb;">${b.bookingCode || b.id || 'VJ' + (1000 + idx)}</strong></td>
+          <td style="font-size: 0.78rem; color: #64748b;">${b.createdAt ? b.createdAt.substring(0, 16).replace('T', ' ') : ''}</td>
+          <td><strong>${cust.fullName || b.customerName || 'Khách Vãng Lai'}</strong></td>
+          <td><a href="tel:${cust.phone || b.phone || ''}" style="color: #0284c7; text-decoration: none; font-weight: 600;">${cust.phone || b.phone || '---'}</a></td>
+          <td style="font-size: 0.8rem; color: #475569;">${cust.email || b.email || '---'}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.tourName || ''}"><strong>${b.tourName || 'Tour Lữ Hành'}</strong></td>
+          <td style="color: #059669; font-size: 0.82rem;">${b.operator || 'Đối tác OTA'}</td>
+          <td>${b.travelDate || '---'}</td>
+          <td style="text-align: center;"><strong>${b.guestsCount || 1}</strong></td>
+          <td><strong style="color: #16a34a;">${formatVND(b.totalAmount || 0)}</strong></td>
+          <td><span class="badge-status-paid">✅ ${pay.status || 'Đã Xác Nhận'}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Live Search in Admin Table
+  if (adminSearchInput) {
+    adminSearchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        renderAdminTable(currentAdminBookings);
+        return;
+      }
+      const filtered = currentAdminBookings.filter(b => {
+        const cust = b.customer || {};
+        const str = `${b.bookingCode || ''} ${cust.fullName || ''} ${cust.phone || ''} ${cust.email || ''} ${b.tourName || ''} ${b.operator || ''}`.toLowerCase();
+        return str.includes(q);
+      });
+      renderAdminTable(filtered);
+    });
+  }
+
+  // Sync Button
+  if (btnSyncAdminData) {
+    btnSyncAdminData.addEventListener('click', async () => {
+      btnSyncAdminData.innerHTML = '<span>⏳ Đang đồng bộ...</span>';
+      await loadAndRenderAdminData();
+      btnSyncAdminData.innerHTML = '<span>🔄 Làm Mới Dữ Liệu</span>';
+    });
+  }
+
+  // Print Report Button
+  if (btnPrintAdminReport) {
+    btnPrintAdminReport.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
+  // Export Excel / CSV Button inside Admin
+  if (btnExportExcelFromAdmin) {
+    btnExportExcelFromAdmin.addEventListener('click', () => {
+      if (!currentAdminBookings.length) {
+        alert('Chưa có dữ liệu để xuất file!');
         return;
       }
 
-      exportBookingsExcelBtn.innerHTML = '<span>⏳ Đang tải dữ liệu...</span>';
-      
-      let bookings = [];
-      // 1. Try to fetch from Firebase Firestore if available
-      if (window.firebase && firebase.apps && firebase.apps.length) {
-        try {
-          const snapshot = await firebase.firestore().collection('bookings').orderBy('createdAt', 'desc').limit(200).get();
-          snapshot.forEach(doc => {
-            bookings.push({ id: doc.id, ...doc.data() });
-          });
-        } catch (err) {
-          console.warn('Lỗi đọc Firestore, lấy từ localStorage:', err);
-        }
-      }
-
-      // 2. Fallback to localStorage or mock data if empty
-      if (!bookings.length) {
-        const local = localStorage.getItem('vietjourneys_bookings');
-        if (local) {
-          try { bookings = JSON.parse(local); } catch (e) {}
-        }
-      }
-
-      // If still empty, supply sample records so user can immediately see the structure
-      if (!bookings.length) {
-        bookings = [
-          {
-            bookingCode: "VJ10294",
-            createdAt: new Date().toISOString(),
-            customer: { fullName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", specialNotes: "Ăn chay" },
-            tourName: "Khám Phá Sa Pa - Đỉnh Fansipan - Bản Cát Cát 3N2Đ",
-            operator: "Sa Pa Eco-Tours Vietnam",
-            travelDate: "2026-11-05",
-            guestsCount: 2,
-            unitPrice: 2850000,
-            totalAmount: 5700000,
-            payment: { method: "VIETQR_NAPAS247", status: "PAID_CONFIRMED" }
-          },
-          {
-            bookingCode: "VJ10295",
-            createdAt: new Date().toISOString(),
-            customer: { fullName: "Trần Thị Mai Hương", phone: "0987654321", email: "huong.tran@gmail.com", specialNotes: "Đoàn có 2 trẻ em" },
-            tourName: "Du Thuyền Vịnh Hạ Long 5 Sao 2N1Đ",
-            operator: "Halong Luxury Cruises",
-            travelDate: "2026-11-12",
-            guestsCount: 4,
-            unitPrice: 3200000,
-            totalAmount: 12800000,
-            payment: { method: "VIETQR_NAPAS247", status: "PAID_CONFIRMED" }
-          }
-        ];
-      }
-
-      // 3. Format CSV with UTF-8 BOM (\uFEFF)
       const headers = [
         "Mã Đơn Hàng", "Thời Gian Đặt", "Họ Tên Khách", "Số Điện Thoại", "Email Nhận Vé",
-        "Tên Tour", "Nhà Điều Hành", "Ngày Khởi Hành", "Số Lượng Khách", "Đơn Giá (VND)",
-        "Tổng Tiền (VND)", "Phương Thức", "Trạng Thái", "Ghi Chú"
+        "Tên Tour", "Nhà Điều Hành", "Vùng Miền", "Ngày Khởi Hành", "Số Lượng Khách",
+        "Đơn Giá (VND)", "Tổng Tiền (VND)", "Phương Thức", "Trạng Thái", "Ghi Chú"
       ];
 
-      const rows = bookings.map(b => {
+      const rows = currentAdminBookings.map(b => {
         const cust = b.customer || {};
         const pay = b.payment || {};
         return [
@@ -1154,6 +1357,7 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
           `"${cust.email || b.email || ''}"`,
           `"${(b.tourName || '').replace(/"/g, '""')}"`,
           `"${(b.operator || '').replace(/"/g, '""')}"`,
+          `"${b.region || 'Miền Bắc'}"`,
           `"${b.travelDate || ''}"`,
           b.guestsCount || 1,
           b.unitPrice || 0,
@@ -1170,13 +1374,10 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
       const link = document.createElement("a");
       const dateStr = new Date().toISOString().slice(0, 10);
       link.setAttribute("href", url);
-      link.setAttribute("download", `Danh_Sach_Dat_Tour_OTAs_Vietnam_${dateStr}.csv`);
+      link.setAttribute("download", `Bao_Cao_Doanh_Thu_OTAs_Vietnam_${dateStr}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      exportBookingsExcelBtn.innerHTML = '<span>📊 Xuất Dữ Liệu Đặt Tour (Excel / CSV)</span>';
-      alert('🎉 Đã tải file Excel/CSV danh sách đặt tour về máy thành công!\nBạn có thể mở trực tiếp bằng Microsoft Excel hoặc Google Sheets.');
     });
   }
 
