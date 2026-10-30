@@ -974,6 +974,16 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
         openTourModal(id);
       });
     });
+
+    msgEl.querySelectorAll('.chat-tour-book-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const tour = state.allTours.find(t => t.id === id);
+        if (tour) {
+          openBookingCheckout(tour);
+        }
+      });
+    });
   }
 
   function escapeHTML(str) {
@@ -1111,9 +1121,12 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
             <div style="font-weight: 700; color: #0a5c36; font-size: 0.85rem; line-height: 1.3;">${t.name}</div>
             <div style="font-size: 0.75rem; color: #0284c7; margin: 0.2rem 0;">🏛️ Nhà điều hành: <strong>${t.operator}</strong></div>
             <div style="font-size: 0.75rem; color: #6b7280;">⏱️ ${t.duration} • ⭐ ${t.rating}</div>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.4rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.4rem; gap: 0.4rem; flex-wrap: wrap;">
               <span style="font-weight: 800; color: #d97706; font-size: 0.95rem;">${formatVND(t.price)}</span>
-              <button type="button" class="btn-detail chat-tour-preview-btn" data-id="${t.id}" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Xem lịch trình</button>
+              <div style="display: flex; gap: 0.35rem;">
+                <button type="button" class="btn-detail chat-tour-preview-btn" data-id="${t.id}" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Lịch trình</button>
+                <button type="button" class="chat-tour-book-btn" data-id="${t.id}" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; background: #15803d; color: white; border: none; font-weight: 700; border-radius: 4px; cursor: pointer;">💳 Đặt Tour</button>
+              </div>
             </div>
           </div>
         `).join('')}
