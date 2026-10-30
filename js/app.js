@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderTours() {
-    resultsCount.innerHTML = `Đang hiển thị <strong>${state.filteredTours.length.toLocaleString('vi-VN')}</strong> / 1.000 tour từ 150+ Travel Operators`;
+    resultsCount.innerHTML = `Đang hiển thị <strong>${state.filteredTours.length.toLocaleString('vi-VN')}</strong> tour phù hợp từ mạng lưới Travel Operators`;
 
     if (state.filteredTours.length === 0) {
       toursGrid.innerHTML = `
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const SYSTEM_INSTRUCTION = `
-Bạn là "Trợ lý AI VietJourneys OTA" - chuyên gia tư vấn du lịch thông minh thuộc sàn lữ hành trực tuyến VietJourneys OTA Marketplace (kết nối hơn 1.000 tour và 150+ Travel Operators khắp 63 tỉnh thành Việt Nam).
+Bạn là "Trợ lý AI VietJourneys OTA" - chuyên gia tư vấn du lịch thông minh thuộc sàn lữ hành trực tuyến VietJourneys OTA Marketplace (kết nối mạng lưới tour đa dạng từ 150+ Travel Operators khắp 63 tỉnh thành Việt Nam).
 
 NHIỆM VỤ CỐT LÕI:
 1. Tư vấn lịch trình, gợi ý tour du lịch theo địa danh, ngân sách, số ngày và sở thích của khách dựa trên dữ liệu được cung cấp.
@@ -591,7 +591,7 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
       <div class="message bot-message">
         <div class="msg-avatar">🤖</div>
         <div class="msg-bubble">
-          <p>Hội thoại đã được làm mới! Tôi là Trợ lý AI OTA VietJourneys, sẵn sàng tư vấn và điều phối hơn 1.000 tour từ 150+ Travel Operators. Quý khách muốn khám phá vùng đất nào?</p>
+          <p>Hội thoại đã được làm mới! Tôi là Trợ lý AI OTA VietJourneys, sẵn sàng tư vấn và điều phối mạng lưới tour từ các Travel Operators uy tín. Quý khách muốn khám phá vùng đất nào?</p>
           <span class="msg-time">Vừa xong</span>
         </div>
       </div>
@@ -673,7 +673,7 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     typingEl.innerHTML = `
       <div class="msg-avatar">🤖</div>
       <div class="msg-bubble" style="color: #6b7280; font-style: italic;">
-        Trợ lý Google Gemini AI đang phân tích dữ liệu 1.000 tour và điều phối...
+        Trợ lý Google Gemini AI đang phân tích dữ liệu tour và điều phối...
       </div>
     `;
     chatMessages.appendChild(typingEl);
@@ -699,7 +699,7 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
       return `
         <p><strong>🌐 Quy trình kết nối & điều phối booking trên OTA VietJourneys:</strong></p>
         <ol style="padding-left: 1.2rem; margin: 0.5rem 0; line-height: 1.6;">
-          <li><strong>Khách hàng chọn tour:</strong> Tra cứu trong hơn 1.000 tour và trò chuyện cùng Trợ lý AI OTA.</li>
+          <li><strong>Khách hàng chọn tour:</strong> Tra cứu các tour du lịch và trò chuyện cùng Trợ lý AI OTA.</li>
           <li><strong>AI khớp lệnh (Matching & Routing):</strong> Chuyển yêu cầu booking tới <em>Travel Operator phụ trách</em> tại địa phương (ví dụ: Halong Cruises, Sapa Discovery, Mekong Riverways...).</li>
           <li><strong>Giữ chỗ & Phục vụ:</strong> Travel Operator chuẩn bị xe, HDV đón tiếp; VietJourneys OTA cam kết giá niêm yết chuẩn và bảo hiểm du lịch 100 triệu VNĐ.</li>
         </ol>
@@ -778,7 +778,7 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     }
 
     return `
-      <p>Cảm ơn quý khách! Nền tảng OTA VietJourneys hiện kết nối hơn <strong>1.000 chương trình tour</strong> từ <strong>150+ Travel Operators</strong> (Hạ Long, Sapa, Hà Giang, Đà Nẵng, Phú Quốc, Côn Đảo, Cần Thơ...).</p>
+      <p>Cảm ơn quý khách! Nền tảng OTA VietJourneys hiện kết nối mạng lưới tour phong phú từ <strong>150+ Travel Operators</strong> (Hạ Long, Sapa, Hà Giang, Đà Nẵng, Phú Quốc, Côn Đảo, Cần Thơ...).</p>
       <p>Quý khách vui lòng nhập tên điểm đến (ví dụ: <em>"Hạ Long"</em>, <em>"Đà Lạt"</em>, <em>"Côn Đảo"</em>) hoặc mức giá mong muốn (ví dụ: <em>"tour dưới 2 triệu"</em>) để Trợ lý AI OTA hỗ trợ ngay nhé!</p>
     `;
   }
