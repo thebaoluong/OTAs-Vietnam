@@ -36,7 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalCloseBtn = document.getElementById('modalCloseBtn');
   const modalBody = document.getElementById('modalBody');
 
-  // Chatbot Elements
+  // Dify Widget Elements (Góc Trái)
+  const difyLauncherBtn = document.getElementById('difyLauncherBtn');
+  const difyWindow = document.getElementById('difyWindow');
+  const closeDifyBtn = document.getElementById('closeDifyBtn');
+
+  // Gemini Widget Elements (Góc Phải)
   const chatbotLauncherBtn = document.getElementById('chatbotLauncherBtn');
   const chatbotWindow = document.getElementById('chatbotWindow');
   const closeChatBtn = document.getElementById('closeChatBtn');
@@ -47,9 +52,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const openChatbotTopBtn = document.getElementById('openChatbotTopBtn');
   const openChatbotFooterBtn = document.getElementById('openChatbotFooterBtn');
 
-  // =========================================================================
-  // 1. DATA INITIALIZATION: LOAD 1.000 TOURS
-  // =========================================================================
+  // Dify Controls (Góc Trái)
+  function openDifyChat() {
+    difyWindow?.removeAttribute('hidden');
+    difyLauncherBtn?.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDifyChat() {
+    difyWindow?.setAttribute('hidden', '');
+    difyLauncherBtn?.setAttribute('aria-expanded', 'false');
+  }
+
+  difyLauncherBtn?.addEventListener('click', () => {
+    const isHidden = difyWindow.hasAttribute('hidden');
+    if (isHidden) openDifyChat();
+    else closeDifyChat();
+  });
+
+  closeDifyBtn?.addEventListener('click', closeDifyChat);
+
+  // Gemini Controls (Góc Phải)
+  function openChatbot() {
+    chatbotWindow?.removeAttribute('hidden');
+    chatbotLauncherBtn?.setAttribute('aria-expanded', 'true');
+    if (chatUserInput) chatUserInput.focus();
+  }
+
+  function closeChatbot() {
+    chatbotWindow?.setAttribute('hidden', '');
+    chatbotLauncherBtn?.setAttribute('aria-expanded', 'false');
+  }
   async function loadToursData() {
     try {
       const response = await fetch('data/1000_tours_vietnam.json');

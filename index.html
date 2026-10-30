@@ -466,33 +466,50 @@
       </div>
     </button>
 
-    <!-- Chatbot Window Panel: Integrated with Dify Chatflow -->
-    <aside class="chatbot-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Trợ lý Du lịch AI OTA" style="width: 420px; height: 640px;" hidden>
-      <div class="chat-header">
+  <!-- =========================================================================
+       DUAL AI CHATBOTS (ACADEMIC PEDAGOGICAL SETUP FOR VLU MASTERS STUDENTS)
+       - Góc Trái (Left): Trợ Lý Dify AI (No-code Agentic Chatflow)
+       - Góc Phải (Right): Trợ Lý Gemini 3.8 Flash (Native API & Firebase)
+       ========================================================================= -->
+
+  <!-- 1. GÓC TRÁI: DIFY.AI CHATFLOW AGENTIC WIDGET -->
+  <div class="ai-chatbot-dify-widget" id="difyWidgetContainer">
+    <!-- Dify Launcher Button -->
+    <button type="button" class="dify-launcher-btn" id="difyLauncherBtn" aria-label="Mở Trợ lý Dify AI" aria-expanded="false">
+      <span style="font-size: 2rem;">🌐</span>
+      <span class="online-indicator"></span>
+      <div class="dify-launcher-tooltip">
+        <span>Góc Trái: Trợ Lý Dify AI (Agentic Chatflow)</span>
+      </div>
+    </button>
+
+    <!-- Dify Chat Window -->
+    <aside class="dify-window" id="difyWindow" aria-label="Cửa sổ hội thoại Dify AI" hidden>
+      <div class="dify-header">
         <div class="chat-header-info">
-          <div class="chat-avatar-small">
-            <span>🌿</span>
+          <div class="chat-avatar-small" style="background: rgba(255,255,255,0.25);">
+            <span>🌐</span>
           </div>
           <div>
-            <h3 class="chat-agent-name">Trợ Lý Dify AI OTA</h3>
-            <span class="chat-agent-status"><span class="status-dot"></span> VLU Masters • Trực tuyến</span>
+            <h3 class="chat-agent-name">Trợ Lý Dify AI (Agentic Chatflow)</h3>
+            <span class="chat-agent-status" style="color: #bfdbfe;"><span class="status-dot" style="background:#60a5fa;"></span> Mô hình No-code RAG • Dify.ai</span>
           </div>
         </div>
         <div class="chat-header-actions">
           <a href="https://udify.app/chatbot/HG0SqfA46yYMtZ2h" target="_blank" class="chat-action-btn" title="Mở toàn màn hình" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">↗</a>
-          <button type="button" class="chat-action-btn" id="closeChatBtn" title="Thu nhỏ chat" aria-label="Đóng chat">✕</button>
+          <button type="button" class="chat-action-btn" id="closeDifyBtn" title="Đóng Dify Chat">✕</button>
         </div>
       </div>
 
-      <!-- VLU Greeting Strip inside Dify Widget -->
-      <div style="background: #f0fdf4; border-bottom: 1px solid #bbf7d0; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;">
-        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #22c55e; flex-shrink: 0;" alt="VLU Masters">
-        <span style="font-size: 0.78rem; color: #15803d; font-weight: 700; line-height: 1.2;">
-          🎓 Chúc các bạn SV masters VLU vui vẻ, học tập tốt! ✨
+      <!-- VLU Greeting Strip -->
+      <div style="background: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;">
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; flex-shrink: 0;" alt="VLU Masters">
+        <span style="font-size: 0.78rem; color: #1e40af; font-weight: 700; line-height: 1.2;">
+          🎓 [Góc Trái] Trợ lý Dify AI Chatflow dành cho SV Masters VLU
         </span>
       </div>
 
-      <!-- Dify Live Chatflow Iframe -->
+      <!-- Live Dify Chatbot Iframe -->
       <iframe
         src="https://udify.app/chatbot/HG0SqfA46yYMtZ2h"
         style="width: 100%; height: calc(100% - 95px); border: none; flex-grow: 1;"
@@ -502,23 +519,79 @@
     </aside>
   </div>
 
+  <!-- 2. GÓC PHẢI: GOOGLE GEMINI 3.8 FLASH DIRECT WIDGET -->
+  <div class="ai-chatbot-gemini-widget" id="geminiWidgetContainer">
+    <!-- Gemini Launcher Button -->
+    <button type="button" class="gemini-launcher-btn" id="chatbotLauncherBtn" aria-label="Mở Trợ lý Gemini AI" aria-expanded="false">
+      <span style="font-size: 2rem;">🤖</span>
+      <span class="online-indicator"></span>
+      <div class="gemini-launcher-tooltip">
+        <span>Góc Phải: Trợ Lý Gemini AI (Native API & Firestore)</span>
+      </div>
+    </button>
+
+    <!-- Gemini Chat Window -->
+    <aside class="gemini-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Gemini AI" hidden>
+      <div class="gemini-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar-small">
+            <span>🤖</span>
+          </div>
+          <div>
+            <h3 class="chat-agent-name">Trợ Lý Gemini 3.8 Flash</h3>
+            <span class="chat-agent-status"><span class="status-dot"></span> Native API • Kết nối Firebase</span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-action-btn" id="clearChatBtn" title="Làm mới chat">🔄</button>
+          <button type="button" class="chat-action-btn" id="closeChatBtn" title="Thu nhỏ chat">✕</button>
+        </div>
+      </div>
+
+      <!-- VLU Greeting Strip inside Gemini Widget -->
+      <div style="background: #f0fdf4; border-bottom: 1px solid #bbf7d0; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;">
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #22c55e; flex-shrink: 0;" alt="VLU Masters">
+        <span style="font-size: 0.78rem; color: #15803d; font-weight: 700; line-height: 1.2;">
+          🎓 [Góc Phải] Trợ lý Gemini AI trực tiếp dành cho SV Masters VLU
+        </span>
+      </div>
+
+      <!-- Quick Knowledge Pills -->
+      <div class="chat-pills-bar">
+        <button type="button" class="chat-pill" data-ask="Gợi ý tour Hạ Long 2N1Đ từ nhà điều hành uy tín">🚢 Hạ Long 2N1Đ</button>
+        <button type="button" class="chat-pill" data-ask="Tìm tour giá dưới 2 triệu">💰 Tour dưới 2tr</button>
+        <button type="button" class="chat-pill" data-ask="Tư vấn tour Côn Đảo viếng mộ Cô Sáu">🕯️ Côn Đảo</button>
+        <button type="button" class="chat-pill" data-ask="Quy trình chuyển booking sang Travel Operator">🔄 Điều phối OTA</button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <div class="message bot-message">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble">
+            <p>Xin chào quý khách! Tôi là <strong>Trợ lý Google Gemini 3.8 Flash AI</strong> 🇻🇳</p>
+            <p>Tôi được lập trình kết nối trực tiếp với cơ sở dữ liệu tour và đồng bộ với <strong>Firebase Firestore</strong>. Tôi có thể giải đáp lịch trình, giá vé và điều phối booking đến 150+ Travel Operators!</p>
+            <span class="msg-time">Vừa xong</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form class="chat-input-form" id="chatInputForm">
+        <input type="text" id="chatUserInput" placeholder="Nhập câu hỏi hoặc điểm đến muốn đi..." autocomplete="off" aria-label="Nội dung chat">
+        <button type="submit" class="btn-send-chat" id="sendChatBtn" aria-label="Gửi tin nhắn">
+          <span>➤</span>
+        </button>
+      </form>
+    </aside>
+  </div>
+  </div>
+
   <!-- FIREBASE SDK & SCRIPTS -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
   <script src="js/firebase-service.js"></script>
   <script src="js/app.js"></script>
-
-  <!-- OFFICIAL DIFY CHATBOT EMBED -->
-  <script>
-    window.difyChatbotConfig = {
-      token: 'HG0SqfA46yYMtZ2h'
-    }
-  </script>
-  <script
-    src="https://udify.app/embed.min.js"
-    id="dify-chatbot-bubble"
-    defer>
-  </script>
 </body>
 </html>
