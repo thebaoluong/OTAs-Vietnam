@@ -52,10 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const openChatbotTopBtn = document.getElementById('openChatbotTopBtn');
   const openChatbotFooterBtn = document.getElementById('openChatbotFooterBtn');
 
-  // Dify Controls (Góc Trái)
-  function openDifyChat() {
+  // Dify Controls (Trợ Lý AI Dify Model)
+  function openDifyChat(tour = null) {
+    closeChatbot();
     difyWindow?.removeAttribute('hidden');
     difyLauncherBtn?.setAttribute('aria-expanded', 'true');
+    if (tour && navigator.clipboard) {
+      navigator.clipboard.writeText(`Tư vấn cho tôi tour ${tour.name} giá ${formatVND(tour.price)}`).catch(() => {});
+    }
   }
 
   function closeDifyChat() {
@@ -377,17 +381,10 @@ document.addEventListener('DOMContentLoaded', () => {
       openBookingCheckout(tour);
     });
 
-    // Nút mở Chatbot tư vấn thêm
+    // Nút mở Chatbot tư vấn qua Dify AI
     document.getElementById('modalConfirmBtn').addEventListener('click', () => {
       tourModal.close();
-      openChatbot();
-      sendBotReply(`
-        <p>Dạ, em thấy quý khách đang quan tâm đến tour <strong>${tour.name}</strong> (${formatVND(tour.price)}).</p>
-        <p>Quý khách dự kiến khởi hành vào ngày nào và có bao nhiêu người đi cùng ạ? Em sẽ tư vấn chi tiết lịch trình và hỗ trợ mình ngay nhé!</p>
-        <div style="margin-top: 0.6rem;">
-          <button type="button" class="chat-tour-book-btn" data-id="${tour.id}" style="padding: 0.4rem 0.8rem; font-size: 0.82rem; background: #15803d; color: white; border: none; font-weight: 700; border-radius: 6px; cursor: pointer;">💳 Đặt Tour Này Ngay</button>
-        </div>
-      `);
+      openDifyChat(tour);
     });
 
     // Native showModal
@@ -900,9 +897,13 @@ Hãy đóng vai Trợ lý du lịch VietJourneys trả lời khách hàng một 
     else closeChatbot();
   });
 
+  document.getElementById('switchToDifyPill')?.addEventListener('click', () => {
+    openDifyChat();
+  });
+
   closeChatBtn.addEventListener('click', closeChatbot);
-  openChatbotTopBtn.addEventListener('click', openChatbot);
-  openChatbotFooterBtn.addEventListener('click', openChatbot);
+  openChatbotTopBtn?.addEventListener('click', () => openDifyChat());
+  openChatbotFooterBtn?.addEventListener('click', () => openDifyChat());
 
   clearChatBtn?.addEventListener('click', () => {
     if (chatMessages) {
@@ -910,7 +911,7 @@ Hãy đóng vai Trợ lý du lịch VietJourneys trả lời khách hàng một 
         <div class="message bot-message">
           <div class="msg-avatar">🤖</div>
           <div class="msg-bubble">
-            <p>Hội thoại đã được làm mới! Tôi là Trợ lý AI OTA VietJourneys, sẵn sàng tư vấn và điều phối mạng lưới tour từ các Travel Operators uy tín. Quý khách muốn khám phá vùng đất nào?</p>
+            <p>Hội thoại đã được làm mới! Tôi là Trợ lý Du lịch VietJourneys, sẵn sàng tư vấn tour và hỗ trợ lịch trình cho quý khách. Quý khách muốn khám phá vùng đất nào?</p>
             <span class="msg-time">Vừa xong</span>
           </div>
         </div>
@@ -920,9 +921,7 @@ Hãy đóng vai Trợ lý du lịch VietJourneys trả lời khách hàng một 
 
   document.querySelectorAll('.prompt-chip').forEach(chip => {
     chip.addEventListener('click', () => {
-      const q = chip.getAttribute('data-question');
-      openChatbot();
-      handleUserMessage(q);
+      openDifyChat();
     });
   });
 
