@@ -568,7 +568,7 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
   function openChatbot() {
     chatbotWindow.removeAttribute('hidden');
     chatbotLauncherBtn.setAttribute('aria-expanded', 'true');
-    chatUserInput.focus();
+    if (chatUserInput) chatUserInput.focus();
   }
 
   function closeChatbot() {
@@ -586,16 +586,18 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
   openChatbotTopBtn.addEventListener('click', openChatbot);
   openChatbotFooterBtn.addEventListener('click', openChatbot);
 
-  clearChatBtn.addEventListener('click', () => {
-    chatMessages.innerHTML = `
-      <div class="message bot-message">
-        <div class="msg-avatar">🤖</div>
-        <div class="msg-bubble">
-          <p>Hội thoại đã được làm mới! Tôi là Trợ lý AI OTA VietJourneys, sẵn sàng tư vấn và điều phối mạng lưới tour từ các Travel Operators uy tín. Quý khách muốn khám phá vùng đất nào?</p>
-          <span class="msg-time">Vừa xong</span>
+  clearChatBtn?.addEventListener('click', () => {
+    if (chatMessages) {
+      chatMessages.innerHTML = `
+        <div class="message bot-message">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble">
+            <p>Hội thoại đã được làm mới! Tôi là Trợ lý AI OTA VietJourneys, sẵn sàng tư vấn và điều phối mạng lưới tour từ các Travel Operators uy tín. Quý khách muốn khám phá vùng đất nào?</p>
+            <span class="msg-time">Vừa xong</span>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   });
 
   document.querySelectorAll('.prompt-chip').forEach(chip => {
@@ -613,9 +615,9 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     });
   });
 
-  chatInputForm.addEventListener('submit', (e) => {
+  chatInputForm?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const message = chatUserInput.value.trim();
+    const message = chatUserInput?.value?.trim();
     if (!message) return;
     chatUserInput.value = '';
     handleUserMessage(message);

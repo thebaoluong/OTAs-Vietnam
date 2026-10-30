@@ -466,60 +466,39 @@
       </div>
     </button>
 
-    <!-- Chatbot Window Panel -->
-    <aside class="chatbot-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Trợ lý Du lịch AI OTA" hidden>
+    <!-- Chatbot Window Panel: Integrated with Dify Chatflow -->
+    <aside class="chatbot-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Trợ lý Du lịch AI OTA" style="width: 420px; height: 640px;" hidden>
       <div class="chat-header">
         <div class="chat-header-info">
           <div class="chat-avatar-small">
             <span>🌿</span>
           </div>
           <div>
-            <h3 class="chat-agent-name">Trợ Lý AI VietJourneys OTA</h3>
-            <span class="chat-agent-status"><span class="status-dot"></span> Kết nối 150+ Travel Operators</span>
+            <h3 class="chat-agent-name">Trợ Lý Dify AI OTA</h3>
+            <span class="chat-agent-status"><span class="status-dot"></span> VLU Masters • Trực tuyến</span>
           </div>
         </div>
         <div class="chat-header-actions">
-          <button type="button" class="chat-action-btn" id="clearChatBtn" title="Làm mới hội thoại">🔄</button>
+          <a href="https://udify.app/chatbot/HG0SqfA46yYMtZ2h" target="_blank" class="chat-action-btn" title="Mở toàn màn hình" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">↗</a>
           <button type="button" class="chat-action-btn" id="closeChatBtn" title="Thu nhỏ chat" aria-label="Đóng chat">✕</button>
         </div>
       </div>
 
-      <!-- Quick Knowledge Pills -->
-      <div class="chat-pills-bar">
-        <button type="button" class="chat-pill" data-ask="Gợi ý tour Hạ Long từ nhà điều hành uy tín">🚢 Tour Hạ Long</button>
-        <button type="button" class="chat-pill" data-ask="Tìm các tour giá dưới 2 triệu">💰 Tour dưới 2tr</button>
-        <button type="button" class="chat-pill" data-ask="Tư vấn tour Phú Quốc 3N2Đ">🏖️ Phú Quốc</button>
-        <button type="button" class="chat-pill" data-ask="Quy trình chuyển booking sang Travel Operator">🔄 Điều phối Operator</button>
+      <!-- VLU Greeting Strip inside Dify Widget -->
+      <div style="background: #f0fdf4; border-bottom: 1px solid #bbf7d0; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;">
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #22c55e; flex-shrink: 0;" alt="VLU Masters">
+        <span style="font-size: 0.78rem; color: #15803d; font-weight: 700; line-height: 1.2;">
+          🎓 Chúc các bạn SV masters VLU vui vẻ, học tập tốt! ✨
+        </span>
       </div>
 
-      <!-- Messages Stream -->
-      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
-        <!-- Welcome Message from Bot -->
-        <div class="message bot-message">
-          <div class="msg-avatar">🤖</div>
-          <div class="msg-bubble">
-            <!-- VLU Student Welcome Banner inside Chat -->
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.6rem;">
-              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #22c55e; flex-shrink: 0;" alt="VLU Masters">
-              <div style="font-size: 0.8rem; color: #15803d; font-weight: 700; line-height: 1.3;">
-                🎓 Chúc các bạn SV masters VLU vui vẻ, học tập tốt! ✨
-              </div>
-            </div>
-
-            <p>Xin chào quý khách! Tôi là <strong>Trợ lý AI của Nền tảng OTA VietJourneys</strong> 🇻🇳</p>
-            <p>Tôi quản lý mạng lưới tour du lịch phong phú từ <strong>150+ nhà điều hành lữ hành (Travel Operators)</strong> khắp 63 tỉnh thành Việt Nam. Khi quý khách ưng ý lịch trình nào, tôi sẽ hỗ trợ so sánh giá và điều phối booking trực tiếp đến Travel Operator phụ trách tuyến đó. Quý khách muốn đi đâu hôm nay?</p>
-            <span class="msg-time">Vừa xong</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chat Input Area -->
-      <form class="chat-input-form" id="chatInputForm">
-        <input type="text" id="chatUserInput" placeholder="Nhập câu hỏi hoặc điểm đến muốn đi..." autocomplete="off" aria-label="Nội dung chat">
-        <button type="submit" class="btn-send-chat" id="sendChatBtn" aria-label="Gửi tin nhắn">
-          <span>➤</span>
-        </button>
-      </form>
+      <!-- Dify Live Chatflow Iframe -->
+      <iframe
+        src="https://udify.app/chatbot/HG0SqfA46yYMtZ2h"
+        style="width: 100%; height: calc(100% - 95px); border: none; flex-grow: 1;"
+        frameborder="0"
+        allow="microphone;clipboard-write">
+      </iframe>
     </aside>
   </div>
 
@@ -529,5 +508,17 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
   <script src="js/firebase-service.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- OFFICIAL DIFY CHATBOT EMBED -->
+  <script>
+    window.difyChatbotConfig = {
+      token: 'HG0SqfA46yYMtZ2h'
+    }
+  </script>
+  <script
+    src="https://udify.app/embed.min.js"
+    id="dify-chatbot-bubble"
+    defer>
+  </script>
 </body>
 </html>
