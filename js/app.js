@@ -220,8 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="price-value">${formatVND(t.price)}</span>
             </div>
             <div class="tour-card-actions">
-              <button type="button" class="btn-detail view-tour-btn" data-id="${t.id}">Chi tiết</button>
-              <button type="button" class="btn-book-quick book-tour-btn" data-id="${t.id}">Đặt qua OTA</button>
+              <button type="button" class="btn-detail view-tour-btn" data-id="${t.id}">Xem Lịch Trình</button>
+              <button type="button" class="btn-book-quick book-tour-btn" data-id="${t.id}" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); color: white; border: none; font-weight: 700; box-shadow: 0 3px 10px rgba(22, 163, 74, 0.35);">💳 Đặt Tour Ngay</button>
             </div>
           </div>
         </div>
@@ -296,29 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', (e) => {
         const id = e.currentTarget.getAttribute('data-id');
         const tour = state.allTours.find(t => t.id === id);
-        
-        // Ghi nhận booking request vào Firebase / Local
-        if (window.FirebaseService) {
-          window.FirebaseService.recordBooking({
-            tourId: tour.id,
-            tourName: tour.name,
-            operator: tour.operator,
-            price: tour.price,
-            duration: tour.duration,
-            departure: tour.departure
-          });
+        if (tour) {
+          openBookingCheckout(tour);
         }
-
-        openChatbot();
-        sendBotReply(`
-          <p>Quý khách đã chọn đặt tour qua sàn OTA VietJourneys:</p>
-          <div style="background: white; border-left: 3px solid #0a5c36; padding: 0.6rem; margin: 0.5rem 0; border-radius: 4px; border: 1px solid #e2e8e5;">
-            <strong>${tour.name}</strong><br>
-            🏛️ <strong>Nhà điều hành phụ trách:</strong> ${tour.operator}<br>
-            💰 <strong>Giá trọn gói:</strong> ${formatVND(tour.price)} • ⏱️ ${tour.duration}
-          </div>
-          <p>Trợ lý AI OTA đang sẵn sàng điều phối booking này sang hệ thống của <strong>${tour.operator}</strong>. Quý khách vui lòng cho biết <strong>Ngày dự kiến khởi hành</strong> và <strong>Số lượng người lớn, trẻ em</strong> để tiến hành giữ chỗ nhé!</p>
-        `);
       });
     });
   }
@@ -439,16 +419,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const bCustPhone = document.getElementById('bCustPhone');
   const bCustEmail = document.getElementById('bCustEmail');
   const bTravelDate = document.getElementById('bTravelDate');
-  const bGuestsCount = document.getElementById('bGuestsCount');
+  const bPickupTime = document.getElementById('bPickupTime');
+  const bPickupLocation = document.getElementById('bPickupLocation');
+
+  // Passenger Counters
+  const bAdultsCount = document.getElementById('bAdultsCount');
+  const btnMinusAdult = document.getElementById('btnMinusAdult');
+  const btnPlusAdult = document.getElementById('btnPlusAdult');
+
+  const bChildrenCount = document.getElementById('bChildrenCount');
+  const btnMinusChild = document.getElementById('btnMinusChild');
+  const btnPlusChild = document.getElementById('btnPlusChild');
+
+  const bInfantsCount = document.getElementById('bInfantsCount');
+  const btnMinusInfant = document.getElementById('btnMinusInfant');
+  const btnPlusInfant = document.getElementById('btnPlusInfant');
+
   const bSpecialNotes = document.getElementById('bSpecialNotes');
-  const btnMinusGuest = document.getElementById('btnMinusGuest');
-  const btnPlusGuest = document.getElementById('btnPlusGuest');
 
   const summaryTourName = document.getElementById('summaryTourName');
   const summaryTourOperator = document.getElementById('summaryTourOperator');
   const summaryTourDuration = document.getElementById('summaryTourDuration');
-  const summaryUnitPrice = document.getElementById('summaryUnitPrice');
-  const summaryPax = document.getElementById('summaryPax');
+  const summaryAdultLabel = document.getElementById('summaryAdultLabel');
+  const summaryAdultTotal = document.getElementById('summaryAdultTotal');
+  const summaryChildLabel = document.getElementById('summaryChildLabel');
+  const summaryChildTotal = document.getElementById('summaryChildTotal');
   const summaryTotalPrice = document.getElementById('summaryTotalPrice');
 
   const vietqrImage = document.getElementById('vietqrImage');
@@ -483,12 +478,15 @@ document.addEventListener('DOMContentLoaded', () => {
     tomorrow.setDate(tomorrow.getDate() + 2);
     bTravelDate.value = tomorrow.toISOString().split('T')[0];
 
+    // Reset counters
+    bAdultsCount.value = 1;
+    bChildrenCount.value = 0;
+    bInfantsCount.value = 0;
+
     // Populate tour summary
     summaryTourName.textContent = tour.name;
     summaryTourOperator.textContent = tour.operator;
     summaryTourDuration.textContent = tour.duration;
-    summaryUnitPrice.textContent = formatVND(tour.price) + ' / khách';
-    bGuestsCount.value = 1;
 
     updateBookingCalculations();
     bookingDialog.showModal();
@@ -496,14 +494,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateBookingCalculations() {
     if (!activeBookingTour) return;
-    let guests = parseInt(bGuestsCount.value, 10);
-    if (isNaN(guests) || guests < 1) guests = 1;
-    if (guests > 50) guests = 50;
-    bGuestsCount.value = guests;
 
-    summaryPax.textContent = `${guests} khách`;
-    const total = guests * activeBookingTour.price;
-    summaryTotalPrice.textContent = formatVND(total);
+    let adults = parseInt(bAdultsCount.value, 10) || 1;
+    if (adults < 1) adults = 1;
+    if (adults > 50) adults = 50;
+    bAdultsCount.value = adults;
+
+    let children = parseInt(bChildrenCount.value, 10) || 0;
+    if (children < 0) children = 0;
+    if (children > 30) children = 30;
+    bChildrenCount.value = children;
+
+    let infants = parseInt(bInfantsCount.value, 10) || 0;
+    if (infants < 0) infants = 0;
+    if (infants > 15) infants = 15;
+    bInfantsCount.value = infants;
+
+    const adultPrice = activeBookingTour.price;
+    const childPrice = Math.round(activeBookingTour.price * 0.75);
+
+    const adultTotal = adults * adultPrice;
+    const childTotal = children * childPrice;
+    const grandTotal = adultTotal + childTotal;
+
+    // Update summary texts
+    summaryAdultLabel.textContent = `Người lớn (${adults} x ${formatVND(adultPrice)}):`;
+    summaryAdultTotal.textContent = formatVND(adultTotal);
+
+    summaryChildLabel.textContent = `Trẻ em 5-10t (${children} x ${formatVND(childPrice)}):`;
+    summaryChildTotal.textContent = formatVND(childTotal);
+
+    summaryTotalPrice.textContent = formatVND(grandTotal);
 
     // Update transfer code & QR
     const rawName = bCustName.value.trim().toUpperCase()
@@ -513,29 +534,43 @@ document.addEventListener('DOMContentLoaded', () => {
     transferCodeDisplay.textContent = codeSnippet;
 
     // VietQR Open API live rendering
-    // Ngân hàng MB Bank (Mã 970422 / MB), STK 0988888888, Tên: LUONG THE BAO
-    const qrUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${total}&addInfo=${encodeURIComponent(codeSnippet)}&accountName=${encodeURIComponent('LUONG THE BAO')}`;
+    const qrUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${grandTotal}&addInfo=${encodeURIComponent(codeSnippet)}&accountName=${encodeURIComponent('LUONG THE BAO')}`;
     vietqrImage.src = qrUrl;
   }
 
-  // Event listeners for guest counter and inputs
-  btnMinusGuest.addEventListener('click', () => {
-    let g = parseInt(bGuestsCount.value, 10) || 1;
-    if (g > 1) {
-      bGuestsCount.value = g - 1;
-      updateBookingCalculations();
-    }
+  // Adult listeners
+  btnMinusAdult.addEventListener('click', () => {
+    let a = parseInt(bAdultsCount.value, 10) || 1;
+    if (a > 1) { bAdultsCount.value = a - 1; updateBookingCalculations(); }
+  });
+  btnPlusAdult.addEventListener('click', () => {
+    let a = parseInt(bAdultsCount.value, 10) || 1;
+    if (a < 50) { bAdultsCount.value = a + 1; updateBookingCalculations(); }
   });
 
-  btnPlusGuest.addEventListener('click', () => {
-    let g = parseInt(bGuestsCount.value, 10) || 1;
-    if (g < 50) {
-      bGuestsCount.value = g + 1;
-      updateBookingCalculations();
-    }
+  // Child listeners
+  btnMinusChild.addEventListener('click', () => {
+    let c = parseInt(bChildrenCount.value, 10) || 0;
+    if (c > 0) { bChildrenCount.value = c - 1; updateBookingCalculations(); }
+  });
+  btnPlusChild.addEventListener('click', () => {
+    let c = parseInt(bChildrenCount.value, 10) || 0;
+    if (c < 30) { bChildrenCount.value = c + 1; updateBookingCalculations(); }
   });
 
-  bGuestsCount.addEventListener('input', updateBookingCalculations);
+  // Infant listeners
+  btnMinusInfant.addEventListener('click', () => {
+    let inf = parseInt(bInfantsCount.value, 10) || 0;
+    if (inf > 0) { bInfantsCount.value = inf - 1; updateBookingCalculations(); }
+  });
+  btnPlusInfant.addEventListener('click', () => {
+    let inf = parseInt(bInfantsCount.value, 10) || 0;
+    if (inf < 15) { bInfantsCount.value = inf + 1; updateBookingCalculations(); }
+  });
+
+  bAdultsCount.addEventListener('input', updateBookingCalculations);
+  bChildrenCount.addEventListener('input', updateBookingCalculations);
+  bInfantsCount.addEventListener('input', updateBookingCalculations);
   bCustName.addEventListener('input', updateBookingCalculations);
 
   // Copy helpers
@@ -564,9 +599,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const phone = bCustPhone.value.trim();
     const email = bCustEmail.value.trim();
     const date = bTravelDate.value;
-    const guests = parseInt(bGuestsCount.value, 10) || 1;
+    const time = bPickupTime ? bPickupTime.value : '07:30';
+    const location = bPickupLocation ? bPickupLocation.value.trim() : 'Khách sạn trung tâm';
+
+    const adults = parseInt(bAdultsCount.value, 10) || 1;
+    const children = parseInt(bChildrenCount.value, 10) || 0;
+    const infants = parseInt(bInfantsCount.value, 10) || 0;
+    const totalGuests = adults + children + infants;
+
+    const adultTotal = adults * activeBookingTour.price;
+    const childTotal = children * Math.round(activeBookingTour.price * 0.75);
+    const grandTotal = adultTotal + childTotal;
+
     const notes = bSpecialNotes.value.trim();
-    const total = guests * activeBookingTour.price;
 
     if (!name || !phone || !email || !date) {
       alert('Vui lòng điền đầy đủ Họ tên, Số điện thoại, Email và Ngày khởi hành!');
@@ -583,10 +628,18 @@ document.addEventListener('DOMContentLoaded', () => {
       tourName: activeBookingTour.name,
       operator: activeBookingTour.operator,
       region: activeBookingTour.region,
-      unitPrice: activeBookingTour.price,
-      guestsCount: guests,
-      totalAmount: total,
       travelDate: date,
+      pickupTime: time,
+      pickupLocation: location,
+      passengers: {
+        adults: adults,
+        children: children,
+        infants: infants,
+        totalGuests: totalGuests
+      },
+      guestsCount: totalGuests,
+      unitPrice: activeBookingTour.price,
+      totalAmount: grandTotal,
       customer: {
         fullName: name,
         phone: phone,
@@ -611,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await window.FirebaseService.recordBooking(bookingPayload);
         await window.FirebaseService.recordChatLog(
           `[HỆ THỐNG] Khách đặt tour: ${name} (${phone}) - ${activeBookingTour.name}`,
-          `Tổng tiền: ${formatVND(total)} - Mã vé: ${activeBookingCode} - Trạng thái: Đã gửi email xác nhận`,
+          `Tổng tiền: ${formatVND(grandTotal)} (${adults}NL, ${children}TE) - Mã vé: ${activeBookingCode} - Giờ đón: ${time} tại ${location}`,
           activeBookingTour.id
         );
       } catch (err) {
@@ -625,9 +678,9 @@ document.addEventListener('DOMContentLoaded', () => {
     vCustName.textContent = name;
     vCustPhone.textContent = phone;
     vCustEmail.textContent = email;
-    vTravelDate.textContent = date;
-    vGuests.textContent = `${guests} du khách (${formatVND(activeBookingTour.price)}/khách)`;
-    vTotal.textContent = formatVND(total);
+    vTravelDate.textContent = `${date} lúc ${time} (${location})`;
+    vGuests.textContent = `${adults} Người lớn, ${children} Trẻ em (5-10t), ${infants} Em bé (<5t)`;
+    vTotal.textContent = formatVND(grandTotal);
 
     bookingFormWrapper.hidden = true;
     bookingSuccessWrapper.hidden = false;
@@ -638,8 +691,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Thông báo cho Gemini Chatbot
     sendBotReply(`
       <p>🎉 <strong>Chúc mừng Quý khách ${name}!</strong></p>
-      <p>Đơn đặt tour <strong>${activeBookingTour.name}</strong> (Mã vé: <code>#${activeBookingCode}</code>) đã được xác nhận thành công.</p>
-      <p>Hệ thống đã gửi vé điện tử (E-Voucher) và hướng dẫn đón tiếp về địa chỉ email <strong>${email}</strong>. Trợ lý AI OTA và nhà điều hành <strong>${activeBookingTour.operator}</strong> chúc Quý khách chuyến đi tuyệt vời!</p>
+      <p>Đơn đặt tour <strong>${activeBookingTour.name}</strong> (Mã vé: <code>#${activeBookingCode}</code>) đã được tiếp nhận thành công.</p>
+      <p>Lịch đón: <strong>${time} ngày ${date}</strong> tại <strong>${location}</strong>. Đoàn gồm: <strong>${adults} Người lớn, ${children} Trẻ em, ${infants} Em bé</strong>.</p>
+      <p>Vé điện tử E-Voucher đã được gửi về email <strong>${email}</strong> và chuyển tới nhà điều hành <strong>${activeBookingTour.operator}</strong>.</p>
     `);
   });
 

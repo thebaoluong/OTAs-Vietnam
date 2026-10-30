@@ -506,27 +506,80 @@
               </div>
             </div>
 
+            <!-- Date & Time Row -->
             <div class="booking-fields-row">
               <div class="booking-field-group">
-                <label for="bTravelDate">Ngày khởi hành dự kiến <span class="required-star">*</span></label>
+                <label for="bTravelDate">📅 Ngày khởi hành dự kiến <span class="required-star">*</span></label>
                 <input type="date" id="bTravelDate" class="booking-input" required>
               </div>
               <div class="booking-field-group">
-                <label for="bGuestsCount">Số lượng khách <span class="required-star">*</span></label>
+                <label for="bPickupTime">⏰ Giờ đón / Giờ tập trung <span class="required-star">*</span></label>
+                <select id="bPickupTime" class="booking-input">
+                  <option value="06:30">06:30 Sáng (Khởi hành sớm)</option>
+                  <option value="07:30" selected>07:30 Sáng (Tiêu chuẩn)</option>
+                  <option value="08:30">08:30 Sáng</option>
+                  <option value="13:30">13:30 Chiều</option>
+                  <option value="15:00">15:00 Chiều</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Pickup Location -->
+            <div class="booking-field-group">
+              <label for="bPickupLocation">📍 Điểm đón yêu cầu <span class="required-star">*</span></label>
+              <input type="text" id="bPickupLocation" class="booking-input" placeholder="Ví dụ: Đón tại Khách sạn trung tâm / Sân bay / Nhà hát lớn" value="Đón tại Khách sạn trung tâm">
+            </div>
+
+            <!-- Passenger Breakdown: Người lớn, Trẻ em, Em bé -->
+            <div class="passenger-breakdown-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem; margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.88rem; font-weight: 700; color: #0f172a; margin-bottom: 0.6rem;">👥 Số Lượng Khách & Phân Loại Độ Tuổi</label>
+              
+              <!-- 1. Người lớn -->
+              <div class="pax-counter-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
+                <div>
+                  <strong style="font-size: 0.88rem; color: #1e293b;">Người lớn (Từ 11 tuổi)</strong>
+                  <span style="display: block; font-size: 0.75rem; color: #64748b;">100% giá vé niêm yết</span>
+                </div>
                 <div class="guests-counter-box">
-                  <button type="button" class="btn-counter" id="btnMinusGuest">-</button>
-                  <input type="number" id="bGuestsCount" class="booking-input-counter" value="1" min="1" max="50">
-                  <button type="button" class="btn-counter" id="btnPlusGuest">+</button>
+                  <button type="button" class="btn-counter" id="btnMinusAdult">-</button>
+                  <input type="number" id="bAdultsCount" class="booking-input-counter" value="1" min="1" max="50">
+                  <button type="button" class="btn-counter" id="btnPlusAdult">+</button>
+                </div>
+              </div>
+
+              <!-- 2. Trẻ em -->
+              <div class="pax-counter-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; padding-bottom: 0.5rem; border-bottom: 1px dashed #e2e8f0;">
+                <div>
+                  <strong style="font-size: 0.88rem; color: #1e293b;">Trẻ em (5 - 10 tuổi)</strong>
+                  <span style="display: block; font-size: 0.75rem; color: #0284c7; font-weight: 600;">Giảm 25% (Tính 75% giá vé)</span>
+                </div>
+                <div class="guests-counter-box">
+                  <button type="button" class="btn-counter" id="btnMinusChild">-</button>
+                  <input type="number" id="bChildrenCount" class="booking-input-counter" value="0" min="0" max="30">
+                  <button type="button" class="btn-counter" id="btnPlusChild">+</button>
+                </div>
+              </div>
+
+              <!-- 3. Em bé -->
+              <div class="pax-counter-row" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <strong style="font-size: 0.88rem; color: #1e293b;">Em bé (Dưới 5 tuổi)</strong>
+                  <span style="display: block; font-size: 0.75rem; color: #16a34a; font-weight: 700;">Miễn phí 100% (0 đ)</span>
+                </div>
+                <div class="guests-counter-box">
+                  <button type="button" class="btn-counter" id="btnMinusInfant">-</button>
+                  <input type="number" id="bInfantsCount" class="booking-input-counter" value="0" min="0" max="15">
+                  <button type="button" class="btn-counter" id="btnPlusInfant">+</button>
                 </div>
               </div>
             </div>
 
             <div class="booking-field-group">
-              <label for="bSpecialNotes">Ghi chú đặc biệt (Tùy chọn)</label>
-              <textarea id="bSpecialNotes" class="booking-textarea" rows="2" placeholder="Ví dụ: Ăn chay, phòng có ban công, đón tại khách sạn..."></textarea>
+              <label for="bSpecialNotes">📝 Ghi chú & Yêu cầu đặc biệt (Tùy chọn)</label>
+              <textarea id="bSpecialNotes" class="booking-textarea" rows="2" placeholder="Ví dụ: Ăn chay, phòng tầng cao có ban công, đón tại khách sạn..."></textarea>
             </div>
 
-            <!-- Tour Summary Card -->
+            <!-- Tour Summary & Pricing Calculation Card -->
             <div class="booking-tour-summary-card">
               <div class="summary-tour-name" id="summaryTourName">Đang tải tên tour...</div>
               <div class="summary-tour-meta">
@@ -536,15 +589,19 @@
               </div>
               <div class="summary-calculation">
                 <div class="calc-row">
-                  <span>Đơn giá niêm yết:</span>
-                  <span id="summaryUnitPrice">0 đ / khách</span>
+                  <span id="summaryAdultLabel">Người lớn (1 x 0 đ):</span>
+                  <strong id="summaryAdultTotal">0 đ</strong>
                 </div>
-                <div class="calc-row">
-                  <span>Số lượng:</span>
-                  <span id="summaryPax">1 khách</span>
+                <div class="calc-row" id="summaryChildRow">
+                  <span id="summaryChildLabel">Trẻ em 5-10 tuổi (0 x 75%):</span>
+                  <strong id="summaryChildTotal">0 đ</strong>
+                </div>
+                <div class="calc-row" id="summaryInfantRow">
+                  <span id="summaryInfantLabel">Em bé &lt; 5 tuổi:</span>
+                  <strong style="color: #16a34a;">0 đ (Miễn phí)</strong>
                 </div>
                 <div class="calc-row total-row">
-                  <span>Tổng tiền thanh toán:</span>
+                  <span>Tổng tiền thanh toán VietQR:</span>
                   <span id="summaryTotalPrice" class="highlight-total">0 đ</span>
                 </div>
               </div>
