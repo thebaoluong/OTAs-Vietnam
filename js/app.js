@@ -1069,11 +1069,20 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
   }
 
   // =========================================================================
-  // 6. EXPORT BOOKINGS TO EXCEL / CSV FOR RESEARCH & MANAGEMENT
+  // 6. EXPORT BOOKINGS TO EXCEL / CSV FOR RESEARCH & MANAGEMENT (ADMIN ONLY)
   // =========================================================================
   const exportBookingsExcelBtn = document.getElementById('exportBookingsExcelBtn');
   if (exportBookingsExcelBtn) {
     exportBookingsExcelBtn.addEventListener('click', async () => {
+      // Xác thực bảo mật Admin / Giảng viên để bảo vệ thông tin cá nhân của học viên
+      const enteredPin = prompt("🔐 XÁC THỰC QUYỀN QUẢN TRỊ VIÊN / GIẢNG VIÊN:\n\nTính năng này trích xuất toàn bộ dữ liệu Họ tên, SĐT và Email của học viên/du khách.\nVui lòng nhập Mã PIN Admin để tải file (Mã mặc định: vlu2026):");
+      
+      if (enteredPin === null) return; // Người dùng bấm Hủy
+      if (enteredPin.trim() !== "vlu2026" && enteredPin.trim() !== "admin123") {
+        alert("❌ MÃ PIN KHÔNG CHÍNH XÁC!\n\nTruy cập bị từ chối. Tính năng này chỉ dành riêng cho Giảng viên / Quản trị viên để bảo mật dữ liệu học viên.");
+        return;
+      }
+
       exportBookingsExcelBtn.innerHTML = '<span>⏳ Đang tải dữ liệu...</span>';
       
       let bookings = [];
