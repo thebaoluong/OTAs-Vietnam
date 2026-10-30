@@ -7,15 +7,15 @@
 
 const FIREBASE_CONFIG_STORAGE_KEY = 'vietjourneys_firebase_config';
 
-// DEFAULT FIREBASE CONFIG TEMPLATE
-// Học viên thay thế thông tin cấu hình từ Firebase Console của mình vào đây:
+// FIREBASE CONFIG CHÍNH THỨC CỦA DỰ ÁN
 const defaultFirebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAPy8_1S8V1fgxaa_UmgIRMfuCAzSPH98o",
+  authDomain: "website-otas-vietnam.firebaseapp.com",
+  projectId: "website-otas-vietnam",
+  storageBucket: "website-otas-vietnam.firebasestorage.app",
+  messagingSenderId: "65033967168",
+  appId: "1:65033967168:web:53770e24de491cde77f1a5",
+  measurementId: "G-CHF3M33TB0"
 };
 
 let db = null;
@@ -40,8 +40,11 @@ function initFirebase() {
         firebase.initializeApp(config);
       }
       db = firebase.firestore();
+      if (typeof firebase.analytics === 'function') {
+        firebase.analytics();
+      }
       isConnected = true;
-      console.log('✅ Firebase Firestore đã kết nối thành công!');
+      console.log('✅ Firebase Firestore & Analytics đã kết nối thành công tới project website-otas-vietnam!');
     } catch (err) {
       console.error('❌ Lỗi khởi tạo Firebase:', err);
     }
