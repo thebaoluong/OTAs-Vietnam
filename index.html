@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VietJourneys OTA - 1.000+ Tour Việt Nam & Nền Tảng Kết Nối Travel Operators</title>
+  <meta name="description" content="Nền tảng OTA du lịch thông minh kết nối hơn 1.000 chương trình tour từ 150+ Travel Operators uy tín khắp 63 tỉnh thành Việt Nam. Trợ lý AI tư vấn và điều phối booking tự động 24/7.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- HEADER & NAVIGATION -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-container">
+      <a href="#" class="brand-logo" aria-label="VietJourneys OTA Trang chủ">
+        <span class="logo-icon">🌿</span>
+        <div class="logo-text">
+          <span class="logo-title">VIETJOURNEYS <span class="ota-badge">OTA</span></span>
+          <span class="logo-sub">Vietnam Travel Marketplace</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Điều hướng chính">
+        <ul class="nav-list">
+          <li><a href="#hero" class="nav-link active">Trang Chủ</a></li>
+          <li><a href="#toursSection" class="nav-link">1.000+ Tour Toàn Quốc</a></li>
+          <li><a href="#servicesSection" class="nav-link">Dịch Vụ Bổ Trợ</a></li>
+          <li><a href="#aboutSection" class="nav-link">Mô Hình OTA & Đối Tác</a></li>
+          <li><a href="#faqsSection" class="nav-link">Chính Sách & FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="tel:19006868" class="hotline-btn" title="Tổng đài OTA">
+          <span class="hotline-icon">📞</span>
+          <div class="hotline-info">
+            <span class="hotline-label">Tổng Đài OTA 24/7</span>
+            <span class="hotline-number">1900 6868</span>
+          </div>
+        </a>
+        <button type="button" class="btn-ai-trigger" id="openChatbotTopBtn" title="Mở Trợ lý Du lịch AI">
+          <span class="sparkle">✨</span> Trợ Lý AI OTA
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section" id="hero">
+    <div class="hero-bg-overlay"></div>
+    <div class="container hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span>Nền Tảng OTA Tiên Phong • Kết Nối 150+ Travel Operators Uy Tín</span>
+        </div>
+        <h1 class="hero-title">1.000+ Chương Trình Tour Khắp Việt Nam Cùng <span class="highlight-text">Trí Tuệ Nhân Tạo AI</span></h1>
+        <p class="hero-desc">Mạng lưới Online Travel Agency (OTA) tích hợp hơn 1.000 tour từ các nhà điều hành lữ hành hàng đầu 63 tỉnh thành. Trợ lý AI tự động so sánh lịch trình, tối ưu ngân sách và điều phối booking tức thì tới đơn vị lữ hành địa phương.</p>
+        
+        <!-- SEARCH & FILTER BAR -->
+        <div class="search-widget" role="search" aria-label="Tìm kiếm chương trình tour">
+          <div class="search-input-group">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Bạn muốn đi đâu? (Hạ Long, Sapa, Phú Quốc, săn mây, lặn san hô, tour giá rẻ...)" aria-label="Từ khóa tìm tour">
+          </div>
+          <div class="filter-dropdown-group">
+            <select id="regionFilter" aria-label="Chọn vùng miền">
+              <option value="all">Tất cả vùng miền (1.000 Tour)</option>
+              <option value="Miền Bắc">Miền Bắc (250 Tour)</option>
+              <option value="Miền Trung">Miền Trung (250 Tour)</option>
+              <option value="Tây Nguyên">Tây Nguyên (150 Tour)</option>
+              <option value="Miền Nam">Miền Nam & ĐBSCL (200 Tour)</option>
+              <option value="Biển Đảo">Biển Đảo Đặc Sắc (100 Tour)</option>
+              <option value="Toàn Quốc">Chuyên Đề & MICE (50 Tour)</option>
+            </select>
+          </div>
+          <div class="filter-dropdown-group">
+            <select id="priceFilter" aria-label="Chọn mức giá">
+              <option value="all">Mọi mức giá</option>
+              <option value="under-1m">Dưới 1.000.000 đ</option>
+              <option value="1m-3m">1.000.000 đ - 3.000.000 đ</option>
+              <option value="3m-5m">3.000.000 đ - 5.000.000 đ</option>
+              <option value="above-5m">Trên 5.000.000 đ</option>
+            </select>
+          </div>
+          <button type="button" class="btn-search-action" id="searchSubmitBtn">
+            <span>Tìm Kiếm Tour</span>
+          </button>
+        </div>
+
+        <!-- QUICK PROMPTS FOR AI -->
+        <div class="quick-prompts">
+          <span class="prompts-label">Gợi ý cho AI OTA:</span>
+          <button type="button" class="prompt-chip" data-question="Gợi ý tour Hạ Long 2 ngày 1 đêm từ các nhà điều hành uy tín">🚢 Du thuyền Hạ Long 2N1Đ</button>
+          <button type="button" class="prompt-chip" data-question="Tìm tour săn mây Tà Xùa hoặc Đà Lạt giá tốt nhất">☁️ Săn mây Tà Xùa / Đà Lạt</button>
+          <button type="button" class="prompt-chip" data-question="Tư vấn tour Côn Đảo viếng mộ Cô Sáu ban đêm">🕯️ Côn Đảo viếng Cô Sáu</button>
+          <button type="button" class="prompt-chip" data-question="Khi tôi đặt tour trên OTA thì quy trình chuyển cho Travel Operator thế nào?">🔄 Quy trình kết nối Operator</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHT STATS -->
+  <section class="stats-bar">
+    <div class="container stats-grid">
+      <div class="stat-item">
+        <span class="stat-number">1.000+</span>
+        <span class="stat-label">Chương Trình Tour Toàn Quốc</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">150+</span>
+        <span class="stat-label">Travel Operators Đối Tác</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">63</span>
+        <span class="stat-label">Tỉnh Thành Khắp Việt Nam</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">AI OTA</span>
+        <span class="stat-label">Điều Phối Trực Tiếp 24/7</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN TOURS SECTION -->
+  <main class="tours-section" id="toursSection">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">ONLINE TRAVEL AGENCY (OTA) MARKETPLACE</div>
+        <h2 class="section-title">1.000+ Chương Trình Tour Tuyển Chọn Khắp Việt Nam</h2>
+        <p class="section-subtitle">Kết nối trực tiếp du khách với hơn 150+ nhà điều hành lữ hành (Travel Operators) uy tín tại từng địa phương. Trợ lý AI tự động điều phối và chuyển giao booking theo thời gian thực.</p>
+      </div>
+
+      <!-- REGION TABS -->
+      <div class="region-tabs" role="tablist" aria-label="Phân loại vùng miền">
+        <button type="button" class="tab-btn active" data-region="all" role="tab">Tất Cả (1.000)</button>
+        <button type="button" class="tab-btn" data-region="Miền Bắc" role="tab">Miền Bắc (250)</button>
+        <button type="button" class="tab-btn" data-region="Miền Trung" role="tab">Miền Trung (250)</button>
+        <button type="button" class="tab-btn" data-region="Tây Nguyên" role="tab">Tây Nguyên (150)</button>
+        <button type="button" class="tab-btn" data-region="Miền Nam" role="tab">Miền Nam & ĐBSCL (200)</button>
+        <button type="button" class="tab-btn" data-region="Biển Đảo" role="tab">Biển Đảo (100)</button>
+        <button type="button" class="tab-btn" data-region="Toàn Quốc" role="tab">Chuyên Đề & MICE (50)</button>
+      </div>
+
+      <!-- SORT & RESULTS COUNTER -->
+      <div class="results-toolbar">
+        <div class="results-count" id="resultsCount">Đang hiển thị <strong>1.000</strong> tour phù hợp</div>
+        <div class="sort-wrapper">
+          <label for="sortSelect">Sắp xếp theo:</label>
+          <select id="sortSelect">
+            <option value="featured">Phổ biến nhất</option>
+            <option value="price-asc">Giá: Thấp đến Cao</option>
+            <option value="price-desc">Giá: Cao đến Thấp</option>
+            <option value="name">Tên tour (A - Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TOURS GRID CONTAINER -->
+      <div class="tours-grid" id="toursGrid" aria-live="polite">
+        <!-- Javascript dynamically injects tour cards here -->
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="pagination-wrapper" id="paginationWrapper">
+        <!-- Pagination buttons injected here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- OTHER SERVICES SECTION -->
+  <section class="services-section" id="servicesSection">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">DỊCH VỤ TOÀN DIỆN</div>
+        <h2 class="section-title">Hệ Sinh Thái Dịch Vụ Du Lịch Bổ Trợ</h2>
+        <p class="section-subtitle">Đồng bộ dịch vụ từ khách sạn, thuê xe đến hỗ trợ thủ tục visa và đoàn MICE doanh nghiệp.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon-box">🏨</div>
+          <h3 class="service-title">Khách Sạn & Resort 4-5 Sao</h3>
+          <p class="service-desc">Kết nối trực tiếp hệ thống phòng Vinpearl, Sun Group, Marriott, IHG. Combo vé máy bay + resort tiết kiệm đến 30%.</p>
+          <ul class="service-features">
+            <li>Ưu đãi nâng hạng phòng</li>
+            <li>Buffet sáng & đón tiễn sân bay</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">🚐</div>
+          <h3 class="service-title">Cho Thuê Xe Du Lịch Đời Mới</h3>
+          <p class="service-desc">Mạng lưới hơn 120 đầu xe từ 4 - 45 chỗ và Limousine Dcar VIP 9-19 chỗ tại các trung tâm du lịch lớn.</p>
+          <ul class="service-features">
+            <li>Nội thất sang trọng, ghế massage VIP</li>
+            <li>Tài xế chuyên nghiệp, thông thạo địa hình</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">✈️</div>
+          <h3 class="service-title">Vé Máy Bay & Tàu Hỏa Du Lịch</h3>
+          <p class="service-desc">Đại lý vé chính thức Vietnam Airlines, Vietjet, Bamboo. Vé tàu ngắm cảnh đèo Hải Vân và tàu sang The Vietage.</p>
+          <ul class="service-features">
+            <li>Giữ chỗ đoàn giá ưu đãi</li>
+            <li>Hỗ trợ đổi vé & xử lý hành lý 24/7</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">🛂</div>
+          <h3 class="service-title">E-Visa & Thủ Tục Xuất Nhập Cảnh</h3>
+          <p class="service-desc">Tư vấn E-visa Việt Nam cho du khách quốc tế & Việt kiều (xử lý khẩn 2-4h). Xin visa đi Nhật, Hàn, Âu, Mỹ.</p>
+          <ul class="service-features">
+            <li>Dịch vụ Fast-track đón nhanh sân bay</li>
+            <li>Tỉ lệ đậu visa đạt trên 98.5%</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">🎯</div>
+          <h3 class="service-title">M.I.C.E & Team Building Doanh Nghiệp</h3>
+          <p class="service-desc">Kết nối các nhà tổ chức sự kiện chuyên nghiệp cho đoàn từ 20 đến 1.000 khách với kịch bản độc quyền.</p>
+          <ul class="service-features">
+            <li>Gameshow bãi biển & Đêm hội Gala Dinner</li>
+            <li>MC chuyên nghiệp & âm thanh ánh sáng chuẩn</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">🛡️</div>
+          <h3 class="service-title">Bảo Hiểm Du Lịch Toàn Diện</h3>
+          <p class="service-desc">Mọi khách hàng đặt tour qua sàn OTA VietJourneys đều được hưởng bảo hiểm tối đa 100.000.000 đ/vụ.</p>
+          <ul class="service-features">
+            <li>Đối tác Bảo Việt & Bảo Minh uy tín</li>
+            <li>Chi trả viện phí & sự cố phát sinh</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT & OTA OPERATOR NETWORK -->
+  <section class="about-section" id="aboutSection">
+    <div class="container about-container">
+      <div class="about-info">
+        <div class="section-tag">MÔ HÌNH VẬN HÀNH OTA</div>
+        <h2 class="section-title">Nền Tảng OTA Du Lịch Kết Nối Travel Operators</h2>
+        <p class="about-desc">Khác với các công ty lữ hành truyền thống, <strong>VietJourneys vận hành theo mô hình Online Travel Agency (OTA)</strong>. Chúng tôi đóng vai trò là cổng công nghệ trung tâm ứng dụng <strong>Trợ lý AI Agentic</strong> để tiếp nhận nhu cầu du khách, tư vấn giải đáp 24/7, và chuyển giao trực tiếp booking tới <strong>các Travel Operators bản địa có uy tín cao nhất</strong> tại mỗi điểm đến.</p>
+        
+        <div class="legal-box">
+          <div class="legal-badge">✓ MÔ HÌNH ĐIỀU PHỐI TRAVEL OPERATORS</div>
+          <p><strong>1. Tiếp nhận & Tư vấn:</strong> Khách hàng tìm kiếm trong 1.000+ tour và trò chuyện với Trợ lý AI OTA.</p>
+          <p><strong>2. Khớp lệnh & Định tuyến (Routing):</strong> Hệ thống tự động chuyển tiếp booking tới Travel Operator phụ trách tuyến đó (Hanoi Heritage, Sapa Trails, Halong Cruises, Mekong Riverways,...).</p>
+          <p><strong>3. Vận hành & Giám sát chất lượng:</strong> Travel Operator thực hiện đón tiếp, hướng dẫn; VietJourneys OTA bảo trợ thanh toán và bảo hiểm du lịch.</p>
+        </div>
+      </div>
+
+      <div class="about-image-card">
+        <div class="card-glass">
+          <div class="tech-card-header">
+            <span class="tech-icon">🌐</span>
+            <div>
+              <h4>Kiến Trúc AI OTA Marketplace</h4>
+              <p>Mô hình nghiên cứu Thạc sĩ Du lịch & Công nghệ</p>
+            </div>
+          </div>
+          <div class="tech-features">
+            <div class="tech-step">
+              <span class="step-num">1</span>
+              <div>
+                <strong>Cơ sở dữ liệu 1.000+ Tour & 150+ Operators</strong>
+                <p>Chuẩn hóa dữ liệu theo chuẩn OTA quốc tế (JSON/RAG)</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <span class="step-num">2</span>
+              <div>
+                <strong>AI Chatbot Agentic & Intent Resolution</strong>
+                <p>Tự động bóc tách địa điểm, ngân sách và sở thích du khách</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <span class="step-num">3</span>
+              <div>
+                <strong>Automated Booking Dispatcher</strong>
+                <p>Điều phối booking tức thì tới Travel Operator phụ trách</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQS ACCORDION -->
+  <section class="faqs-section" id="faqsSection">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">HỎI ĐÁP & CHÍNH SÁCH OTA</div>
+        <h2 class="section-title">Câu Hỏi Thường Gặp Về Mô Hình OTA</h2>
+        <p class="section-subtitle">Giải đáp về cơ chế đặt tour, thanh toán và bảo vệ quyền lợi du khách trên nền tảng OTA.</p>
+      </div>
+
+      <div class="accordion-wrapper" id="faqsAccordion">
+        <div class="faq-card open">
+          <button type="button" class="faq-question" aria-expanded="true">
+            <span>Khi tôi đặt tour trên website, ai sẽ là đơn vị tổ chức chuyến đi?</span>
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>VietJourneys là nền tảng OTA kết nối. Khi quý khách xác nhận đặt tour, hệ thống sẽ chuyển giao đơn hàng trực tiếp tới <strong>Travel Operator (Nhà điều hành lữ hành) chuyên tuyến</strong> tại địa phương đó (ví dụ: Halong Cruise Co., Sapa Discovery Trails, Mekong Delta Travel). Hướng dẫn viên và xe của nhà điều hành sẽ đón tiếp quý khách, trong khi VietJourneys đảm bảo giá niêm yết chuẩn và quyền lợi bảo hiểm du lịch.</p>
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button type="button" class="faq-question" aria-expanded="false">
+            <span>Chính sách giá vé tour đối với trẻ em như thế nào?</span>
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>• <strong>Dưới 5 tuổi:</strong> Miễn phí 100% giá tour. Gia đình tự lo chi phí ăn uống và vé điểm tham quan tính theo chiều cao (nếu có). 2 người lớn kèm tối đa 1 bé miễn phí.<br>
+            • <strong>Từ 5 đến dưới 10 tuổi:</strong> 75% giá tour người lớn (bao gồm chỗ ngồi trên xe, suất ăn riêng, vé tham quan, ngủ chung giường bố mẹ).<br>
+            • <strong>Từ 10 tuổi trở lên:</strong> Tính 100% như vé người lớn tiêu chuẩn.</p>
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button type="button" class="faq-question" aria-expanded="false">
+            <span>Quy định hoàn tiền và dời/hủy tour ra sao?</span>
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>• Hủy trước 20 ngày: Phí 10% tiền cọc.<br>
+            • Hủy từ 10 - 19 ngày: Phí 30% giá tour.<br>
+            • Hủy từ 05 - 09 ngày: Phí 50% giá tour.<br>
+            • Hủy từ 02 - 04 ngày: Phí 70% giá tour.<br>
+            • Hủy trong 24h hoặc không đến: Phí 100% giá tour.<br>
+            <em>*Trong trường hợp bất khả kháng thiên tai hoặc bão lũ, nền tảng OTA cùng Travel Operator hỗ trợ dời ngày miễn phí hoặc bảo lưu tiền trong 12 tháng.</em></p>
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button type="button" class="faq-question" aria-expanded="false">
+            <span>Khách ăn chay hoặc dị ứng thức ăn có tham gia tour được không?</span>
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>Hoàn toàn được! Quý khách chỉ cần thông báo cho Trợ lý AI OTA trước ngày khởi hành ít nhất 24 giờ. Hệ thống sẽ chuyển ghi chú ăn uống tới Travel Operator và nhà hàng địa phương để chuẩn bị phần ăn chay chu đáo hoặc món thay thế an toàn.</p>
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button type="button" class="faq-question" aria-expanded="false">
+            <span>Công ty có xuất hóa đơn VAT điện tử hợp pháp không?</span>
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>Có. VietJourneys OTA xuất hóa đơn giá trị gia tăng (VAT) điện tử đầy đủ và chuẩn mực cho tất cả các đoàn khách cá nhân và doanh nghiệp theo đúng quy định hiện hành của Tổng cục Thuế.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col brand-col">
+        <a href="#" class="brand-logo footer-logo">
+          <span class="logo-icon">🌿</span>
+          <div class="logo-text">
+            <span class="logo-title">VIETJOURNEYS <span class="ota-badge">OTA</span></span>
+            <span class="logo-sub">Travel Marketplace</span>
+          </div>
+        </a>
+        <p class="footer-desc">Nền tảng Online Travel Agency (OTA) kết nối 1.000+ tour từ 150+ Travel Operators uy tín khắp 63 tỉnh thành Việt Nam, tích hợp trợ lý AI thông minh hỗ trợ du khách 24/7.</p>
+        <div class="footer-contacts">
+          <p>📞 <strong>Tổng đài OTA:</strong> 1900 6868 - 0908 123 456</p>
+          <p>✉️ <strong>Email:</strong> booking@vietjourneys.vn</p>
+          <p>🏢 <strong>Trụ sở:</strong> 180 Nguyễn Thị Minh Khai, P. Võ Thị Sáu, Quận 3, TP.HCM</p>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Điểm Đến Hấp Dẫn</h4>
+        <ul class="footer-links">
+          <li><a href="#" data-query="Hạ Long">Du Thuyền Vịnh Hạ Long</a></li>
+          <li><a href="#" data-query="Sapa">Sapa - Fansipan Nóc Nhà ĐD</a></li>
+          <li><a href="#" data-query="Đà Nẵng">Đà Nẵng - Cầu Vàng - Hội An</a></li>
+          <li><a href="#" data-query="Phú Quốc">Phú Quốc Thiên Đường Biển</a></li>
+          <li><a href="#" data-query="Côn Đảo">Côn Đảo Tâm Linh Huyền Bí</a></li>
+          <li><a href="#" data-query="Tây Bắc">Vòng Cung Tây Bắc Đại Ngàn</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Hệ Thống Dịch Vụ</h4>
+        <ul class="footer-links">
+          <li><a href="#servicesSection">Đặt Phòng Khách Sạn & Resort</a></li>
+          <li><a href="#servicesSection">Thuê Xe Du Lịch 4 - 45 Chỗ</a></li>
+          <li><a href="#servicesSection">Vé Máy Bay & Tàu Hỏa Bắc Nam</a></li>
+          <li><a href="#servicesSection">Thủ Tục E-Visa Khẩn Cấp</a></li>
+          <li><a href="#servicesSection">Team Building & MICE Doanh Nghiệp</a></li>
+          <li><a href="#servicesSection">Bảo Hiểm Du Lịch Quốc Tế</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Trợ Lý Ảo Du Lịch AI</h4>
+        <p class="footer-ai-note">Hệ thống chatbot tự động được tích hợp dữ liệu 1.000 tour và 150+ travel operators, hỗ trợ học viên cao học nghiên cứu ứng dụng AI trong điều phối lữ hành.</p>
+        <button type="button" class="btn-chat-footer" id="openChatbotFooterBtn">
+          <span>💬 Trò Chuyện Cùng Trợ Lý AI OTA</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p>© 2026 VietJourneys OTA Marketplace. Bản quyền thuộc đề tài nghiên cứu Thạc sĩ Du lịch & Ứng dụng AI.</p>
+        <div class="footer-legal-links">
+          <a href="#">Điều khoản sử dụng OTA</a>
+          <span>•</span>
+          <a href="#">Dành cho Travel Operators</a>
+          <span>•</span>
+          <a href="#">Chính sách bảo mật</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ACCESSIBLE MODAL: TOUR DETAILS DIALOG -->
+  <dialog id="tourDetailDialog" class="tour-modal" aria-labelledby="modalTourTitle" closedby="any">
+    <div class="modal-dialog-content">
+      <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Đóng chi tiết tour">✕</button>
+      <div id="modalBody">
+        <!-- Javascript populates tour details here -->
+      </div>
+    </div>
+  </dialog>
+
+  <!-- FLOATING AI CHATBOT WIDGET -->
+  <div class="ai-chatbot-widget" id="aiChatbotWidget">
+    <!-- Floating Launcher Button -->
+    <button type="button" class="chatbot-launcher-btn" id="chatbotLauncherBtn" aria-label="Mở khung chat Trợ lý Du lịch AI OTA" aria-expanded="false">
+      <div class="launcher-avatar">
+        <span class="avatar-emoji">🤖</span>
+        <span class="online-indicator"></span>
+      </div>
+      <div class="launcher-tooltip">
+        <span>Cần tư vấn 1.000+ tour? Hỏi Trợ lý AI ngay!</span>
+      </div>
+    </button>
+
+    <!-- Chatbot Window Panel -->
+    <aside class="chatbot-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Trợ lý Du lịch AI OTA" hidden>
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar-small">
+            <span>🌿</span>
+          </div>
+          <div>
+            <h3 class="chat-agent-name">Trợ Lý AI VietJourneys OTA</h3>
+            <span class="chat-agent-status"><span class="status-dot"></span> Kết nối 1.000+ Tour & 150+ Operators</span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-action-btn" id="clearChatBtn" title="Làm mới hội thoại">🔄</button>
+          <button type="button" class="chat-action-btn" id="closeChatBtn" title="Thu nhỏ chat" aria-label="Đóng chat">✕</button>
+        </div>
+      </div>
+
+      <!-- Quick Knowledge Pills -->
+      <div class="chat-pills-bar">
+        <button type="button" class="chat-pill" data-ask="Gợi ý tour Hạ Long từ nhà điều hành uy tín">🚢 Tour Hạ Long</button>
+        <button type="button" class="chat-pill" data-ask="Tìm các tour giá dưới 2 triệu">💰 Tour dưới 2tr</button>
+        <button type="button" class="chat-pill" data-ask="Tư vấn tour Phú Quốc 3N2Đ">🏖️ Phú Quốc</button>
+        <button type="button" class="chat-pill" data-ask="Quy trình chuyển booking sang Travel Operator">🔄 Điều phối Operator</button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <!-- Welcome Message from Bot -->
+        <div class="message bot-message">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble">
+            <p>Xin chào quý khách! Tôi là <strong>Trợ lý AI của Nền tảng OTA VietJourneys</strong> 🇻🇳</p>
+            <p>Tôi quản lý cơ sở dữ liệu hơn <strong>1.000 chương trình tour</strong> từ <strong>150+ nhà điều hành lữ hành (Travel Operators)</strong> khắp 63 tỉnh thành Việt Nam. Khi quý khách ưng ý lịch trình nào, tôi sẽ hỗ trợ so sánh giá và điều phối booking trực tiếp đến Travel Operator phụ trách tuyến đó. Quý khách muốn đi đâu hôm nay?</p>
+            <span class="msg-time">Vừa xong</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <form class="chat-input-form" id="chatInputForm">
+        <input type="text" id="chatUserInput" placeholder="Nhập câu hỏi hoặc điểm đến muốn đi..." autocomplete="off" aria-label="Nội dung chat">
+        <button type="submit" class="btn-send-chat" id="sendChatBtn" aria-label="Gửi tin nhắn">
+          <span>➤</span>
+        </button>
+      </form>
+    </aside>
+  </div>
+
+  <!-- FIREBASE SDK & SCRIPTS -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-service.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
