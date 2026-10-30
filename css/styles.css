@@ -1327,22 +1327,513 @@ dialog::backdrop {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.modal-action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.modal-btn-book-now {
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  color: white;
+  border: none;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-btn-book-now:hover {
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45);
 }
 
 .modal-btn-confirm {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.85rem 2rem;
+  background: var(--surface-alt);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.85rem 1.4rem;
   border-radius: var(--radius-md);
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(10, 92, 54, 0.3);
   transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .modal-btn-confirm:hover {
-  background: var(--primary-dark);
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+/* ==========================================================================
+   BOOKING & VIETQR CHECKOUT MODAL STYLING
+   ========================================================================== */
+dialog.booking-modal {
+  max-width: 940px;
+  width: 92vw;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.booking-dialog-content {
+  padding: 2.2rem;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.booking-modal-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.badge-booking-step {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.5rem;
+}
+
+.booking-modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.booking-modal-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.booking-form-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr;
+  gap: 2rem;
+}
+
+.booking-section-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.booking-field-group {
+  margin-bottom: 1rem;
+}
+
+.booking-field-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.required-star {
+  color: #dc2626;
+}
+
+.booking-input, .booking-textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background-color: var(--surface);
+  transition: border-color var(--transition-fast);
+}
+
+.booking-input:focus, .booking-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 92, 54, 0.15);
+}
+
+.booking-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.guests-counter-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 40px;
+}
+
+.btn-counter {
+  width: 38px;
+  height: 100%;
+  border: none;
+  background: var(--surface-alt);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background var(--transition-fast);
+}
+
+.btn-counter:hover {
+  background: #e2e8f0;
+}
+
+.booking-input-counter {
+  flex-grow: 1;
+  text-align: center;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+  background: transparent;
+  width: 50px;
+}
+
+/* Tour Summary Card */
+.booking-tour-summary-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 1.1rem;
+  margin-top: 1.25rem;
+}
+
+.summary-tour-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.summary-tour-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.summary-calculation {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 0.75rem;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.3rem;
+}
+
+.calc-row.total-row {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.highlight-total {
+  color: #15803d;
+  font-size: 1.25rem;
+}
+
+/* VietQR Right Column */
+.vietqr-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.vietqr-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.vietqr-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.vietqr-badge.napas {
+  background: #0284c7;
+  color: white;
+}
+
+.vietqr-badge.live {
+  background: #16a34a;
+  color: white;
+}
+
+.vietqr-image-wrapper {
+  position: relative;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  display: inline-block;
+  min-height: 220px;
+  min-width: 220px;
+  margin-bottom: 0.85rem;
+  border: 1px solid #e2e8f0;
+}
+
+.vietqr-img {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.vietqr-instructions {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.bank-details-box {
+  background: #f1f5f9;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.bank-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.bank-detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  color: #64748b;
+}
+
+.detail-value {
+  color: #0f172a;
+}
+
+.detail-value.highlight-num {
+  font-size: 1rem;
+  color: #1e40af;
+  font-family: monospace;
+}
+
+.detail-value.code-snippet {
+  background: #e2e8f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.detail-value-with-copy {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-copy-code {
+  border: none;
+  background: #e2e8f0;
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.btn-copy-code:hover {
+  background: #cbd5e1;
+}
+
+.btn-submit-booking {
+  width: 100%;
+  margin-top: 1.25rem;
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  color: white;
+  border: none;
+  padding: 0.95rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4);
+  transition: all var(--transition-fast);
+}
+
+.btn-submit-booking:hover {
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.5);
+}
+
+.booking-guarantee-note {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.35;
+}
+
+/* Success E-Voucher Screen */
+.booking-success-container {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.success-icon-badge {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.success-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  color: #166534;
+  margin-bottom: 0.35rem;
+}
+
+.success-subtitle {
+  font-size: 0.95rem;
+  color: #475569;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+
+.evoucher-ticket {
+  background: #ffffff;
+  border: 2px dashed #16a34a;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  max-width: 680px;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.evoucher-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.evoucher-brand {
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #15803d;
+}
+
+.evoucher-code-tag {
+  background: #f0fdf4;
+  color: #166534;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.evoucher-tour-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.evoucher-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+}
+
+.v-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.v-val {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.v-val.total {
+  font-size: 1.15rem;
+  color: #15803d;
+  font-weight: 800;
+}
+
+.evoucher-footer-note {
+  font-size: 0.82rem;
+  color: #475569;
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 0.75rem;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .booking-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .booking-fields-row {
+    grid-template-columns: 1fr;
+  }
+  .evoucher-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ==========================================================================

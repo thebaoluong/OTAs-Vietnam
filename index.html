@@ -453,6 +453,192 @@
     </div>
   </dialog>
 
+  <!-- ACCESSIBLE MODAL: BOOKING & VIETQR CHECKOUT DIALOG -->
+  <dialog id="bookingCheckoutDialog" class="tour-modal booking-modal" aria-labelledby="bookingModalTitle" closedby="any">
+    <div class="modal-dialog-content booking-dialog-content">
+      <button type="button" class="modal-close-btn" id="bookingCloseBtn" aria-label="Đóng đặt tour">✕</button>
+      
+      <div id="bookingFormWrapper">
+        <div class="booking-modal-header">
+          <span class="badge-booking-step">Bước 1 & 2 / 2</span>
+          <h2 id="bookingModalTitle" class="booking-modal-title">Đặt Tour & Thanh Toán VietQR</h2>
+          <p class="booking-modal-subtitle">Xác nhận thông tin, quét mã QR thanh toán nhanh Napas 24/7 và nhận Vé Điện Tử (E-Voucher) qua Email ngay lập tức.</p>
+        </div>
+
+        <form id="bookingCheckoutForm" class="booking-form-grid" novalidate>
+          <!-- Left Col: Customer & Tour Information -->
+          <div class="booking-col-info">
+            <h3 class="booking-section-heading">👤 Thông Tin Du Khách</h3>
+            
+            <div class="booking-field-group">
+              <label for="bCustName">Họ và Tên khách đại diện <span class="required-star">*</span></label>
+              <input type="text" id="bCustName" class="booking-input" placeholder="Ví dụ: Nguyễn Văn An" required>
+            </div>
+
+            <div class="booking-fields-row">
+              <div class="booking-field-group">
+                <label for="bCustPhone">Số điện thoại (Zalo) <span class="required-star">*</span></label>
+                <input type="tel" id="bCustPhone" class="booking-input" placeholder="0912 345 678" required>
+              </div>
+              <div class="booking-field-group">
+                <label for="bCustEmail">Email nhận vé điện tử <span class="required-star">*</span></label>
+                <input type="email" id="bCustEmail" class="booking-input" placeholder="an.nguyen@gmail.com" required>
+              </div>
+            </div>
+
+            <div class="booking-fields-row">
+              <div class="booking-field-group">
+                <label for="bTravelDate">Ngày khởi hành dự kiến <span class="required-star">*</span></label>
+                <input type="date" id="bTravelDate" class="booking-input" required>
+              </div>
+              <div class="booking-field-group">
+                <label for="bGuestsCount">Số lượng khách <span class="required-star">*</span></label>
+                <div class="guests-counter-box">
+                  <button type="button" class="btn-counter" id="btnMinusGuest">-</button>
+                  <input type="number" id="bGuestsCount" class="booking-input-counter" value="1" min="1" max="50">
+                  <button type="button" class="btn-counter" id="btnPlusGuest">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="booking-field-group">
+              <label for="bSpecialNotes">Ghi chú đặc biệt (Tùy chọn)</label>
+              <textarea id="bSpecialNotes" class="booking-textarea" rows="2" placeholder="Ví dụ: Ăn chay, phòng có ban công, đón tại khách sạn..."></textarea>
+            </div>
+
+            <!-- Tour Summary Card -->
+            <div class="booking-tour-summary-card">
+              <div class="summary-tour-name" id="summaryTourName">Đang tải tên tour...</div>
+              <div class="summary-tour-meta">
+                <span>Nhà điều hành: <strong id="summaryTourOperator">---</strong></span>
+                <span>•</span>
+                <span>Thời lượng: <strong id="summaryTourDuration">---</strong></span>
+              </div>
+              <div class="summary-calculation">
+                <div class="calc-row">
+                  <span>Đơn giá niêm yết:</span>
+                  <span id="summaryUnitPrice">0 đ / khách</span>
+                </div>
+                <div class="calc-row">
+                  <span>Số lượng:</span>
+                  <span id="summaryPax">1 khách</span>
+                </div>
+                <div class="calc-row total-row">
+                  <span>Tổng tiền thanh toán:</span>
+                  <span id="summaryTotalPrice" class="highlight-total">0 đ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Col: VietQR Payment & Account Info -->
+          <div class="booking-col-payment">
+            <h3 class="booking-section-heading">💳 Thanh Toán Chuyển Khoản VietQR</h3>
+            
+            <div class="vietqr-card">
+              <div class="vietqr-badges">
+                <span class="vietqr-badge napas">NAPAS 24/7</span>
+                <span class="vietqr-badge live">Tự Động Điền Tiền</span>
+              </div>
+
+              <!-- Dynamic QR Image Container -->
+              <div class="vietqr-image-wrapper">
+                <img id="vietqrImage" src="" alt="Mã thanh toán VietQR OTA Du Lịch" class="vietqr-img">
+                <div class="vietqr-loading-spinner" id="vietqrSpinner" hidden>Đang tạo mã QR...</div>
+              </div>
+
+              <div class="vietqr-instructions">
+                <p>Mở App Ngân hàng bất kỳ hoặc MoMo quét mã để thanh toán chuẩn xác 100%.</p>
+              </div>
+
+              <!-- Bank Account Details with Copy Buttons -->
+              <div class="bank-details-box">
+                <div class="bank-detail-item">
+                  <span class="detail-label">Ngân hàng:</span>
+                  <strong class="detail-value" id="bankNameDisplay">MB Bank (Quân Đội)</strong>
+                </div>
+                <div class="bank-detail-item">
+                  <span class="detail-label">Số tài khoản:</span>
+                  <div class="detail-value-with-copy">
+                    <strong class="detail-value highlight-num" id="bankAccDisplay">0988888888</strong>
+                    <button type="button" class="btn-copy-code" id="btnCopyAcc" title="Sao chép số tài khoản">📋</button>
+                  </div>
+                </div>
+                <div class="bank-detail-item">
+                  <span class="detail-label">Chủ tài khoản:</span>
+                  <strong class="detail-value" id="bankOwnerDisplay">TS. LUONG THE BAO</strong>
+                </div>
+                <div class="bank-detail-item">
+                  <span class="detail-label">Nội dung chuyển khoản:</span>
+                  <div class="detail-value-with-copy">
+                    <strong class="detail-value code-snippet" id="transferCodeDisplay">VJ_1001_AN</strong>
+                    <button type="button" class="btn-copy-code" id="btnCopyCode" title="Sao chép cú pháp">📋</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit-booking" id="btnSubmitBooking">
+              <span>🚀 Tôi Đã Quét QR / Xác Nhận Đặt Tour</span>
+            </button>
+            <p class="booking-guarantee-note">🔒 Bảo mật dữ liệu mã hóa. Vé điện tử và hóa đơn sẽ được gửi tự động tới email và đồng bộ lên Google Firebase.</p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Screen (E-Voucher) -->
+      <div id="bookingSuccessWrapper" class="booking-success-container" hidden>
+        <div class="success-icon-badge">🎉</div>
+        <h2 class="success-title">Đặt Tour & Xác Nhận Thành Công!</h2>
+        <p class="success-subtitle">Hệ thống VietJourneys OTA đã ghi nhận đơn đặt tour và gửi vé điện tử (E-Voucher) về hòm thư của Quý khách.</p>
+
+        <div class="evoucher-ticket">
+          <div class="evoucher-header">
+            <div class="evoucher-brand">VIETJOURNEYS OTA MARKETPLACE</div>
+            <div class="evoucher-code-tag">MÃ VÉ: <span id="vTicketCode">#VJ-2026-8888</span></div>
+          </div>
+          <div class="evoucher-body">
+            <h3 class="evoucher-tour-title" id="vTourName">---</h3>
+            <div class="evoucher-grid">
+              <div>
+                <span class="v-label">Khách đại diện:</span>
+                <strong class="v-val" id="vCustName">---</strong>
+              </div>
+              <div>
+                <span class="v-label">Điện thoại liên hệ:</span>
+                <strong class="v-val" id="vCustPhone">---</strong>
+              </div>
+              <div>
+                <span class="v-label">Email nhận vé:</span>
+                <strong class="v-val" id="vCustEmail">---</strong>
+              </div>
+              <div>
+                <span class="v-label">Ngày khởi hành:</span>
+                <strong class="v-val" id="vTravelDate">---</strong>
+              </div>
+              <div>
+                <span class="v-label">Số lượng du khách:</span>
+                <strong class="v-val" id="vGuests">---</strong>
+              </div>
+              <div>
+                <span class="v-label">Tổng tiền thanh toán:</span>
+                <strong class="v-val total" id="vTotal">---</strong>
+              </div>
+            </div>
+            <div class="evoucher-footer-note">
+              <span>Trạng thái: <strong style="color: #16a34a;">Đã ghi nhận trên Cloud Firestore & Gửi Email tự động</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <button type="button" class="btn-primary" id="btnBackToTours">Hoàn Tất & Khám Phá Thêm Tour</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <!-- =========================================================================
        DUAL AI CHATBOTS (ACADEMIC PEDAGOGICAL SETUP FOR VLU MASTERS STUDENTS)
        - Góc Trái (Left): Trợ Lý Dify AI (No-code Agentic Chatflow)

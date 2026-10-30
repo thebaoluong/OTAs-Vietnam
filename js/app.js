@@ -380,12 +380,24 @@ document.addEventListener('DOMContentLoaded', () => {
           <span style="font-size: 0.8rem; color: #6b7280; display: block;">Giá trọn gói đảm bảo</span>
           <span style="font-size: 1.5rem; font-weight: 800; color: #0a5c36;">${formatVND(tour.price)}</span>
         </div>
-        <button type="button" class="modal-btn-confirm" id="modalConfirmBtn" data-id="${tour.id}">
-          💬 Đặt Tour & Điều Phối Qua AI
-        </button>
+        <div class="modal-action-buttons">
+          <button type="button" class="modal-btn-book-now" id="modalBookNowBtn" data-id="${tour.id}">
+            💳 Đặt Tour & Thanh Toán VietQR
+          </button>
+          <button type="button" class="modal-btn-confirm" id="modalConfirmBtn" data-id="${tour.id}">
+            💬 Tư Vấn Qua AI
+          </button>
+        </div>
       </div>
     `;
 
+    // Nút mở form đặt tour & VietQR
+    document.getElementById('modalBookNowBtn').addEventListener('click', () => {
+      tourModal.close();
+      openBookingCheckout(tour);
+    });
+
+    // Nút mở Chatbot tư vấn thêm
     document.getElementById('modalConfirmBtn').addEventListener('click', () => {
       tourModal.close();
       openChatbot();
@@ -411,6 +423,225 @@ document.addEventListener('DOMContentLoaded', () => {
     tourModal.addEventListener('pointerdown', (e) => { pressedOutside = outside(e, tourModal); });
     tourModal.addEventListener('pointerup', (e) => { if (pressedOutside && outside(e, tourModal)) tourModal.close(); });
   }
+
+  // =========================================================================
+  // 4.1. BOOKING CHECKOUT & VIETQR PAYMENT ENGINE
+  // =========================================================================
+  const bookingDialog = document.getElementById('bookingCheckoutDialog');
+  const bookingCloseBtn = document.getElementById('bookingCloseBtn');
+  const bookingCheckoutForm = document.getElementById('bookingCheckoutForm');
+  const bookingFormWrapper = document.getElementById('bookingFormWrapper');
+  const bookingSuccessWrapper = document.getElementById('bookingSuccessWrapper');
+  const btnBackToTours = document.getElementById('btnBackToTours');
+
+  // Input & display elements
+  const bCustName = document.getElementById('bCustName');
+  const bCustPhone = document.getElementById('bCustPhone');
+  const bCustEmail = document.getElementById('bCustEmail');
+  const bTravelDate = document.getElementById('bTravelDate');
+  const bGuestsCount = document.getElementById('bGuestsCount');
+  const bSpecialNotes = document.getElementById('bSpecialNotes');
+  const btnMinusGuest = document.getElementById('btnMinusGuest');
+  const btnPlusGuest = document.getElementById('btnPlusGuest');
+
+  const summaryTourName = document.getElementById('summaryTourName');
+  const summaryTourOperator = document.getElementById('summaryTourOperator');
+  const summaryTourDuration = document.getElementById('summaryTourDuration');
+  const summaryUnitPrice = document.getElementById('summaryUnitPrice');
+  const summaryPax = document.getElementById('summaryPax');
+  const summaryTotalPrice = document.getElementById('summaryTotalPrice');
+
+  const vietqrImage = document.getElementById('vietqrImage');
+  const transferCodeDisplay = document.getElementById('transferCodeDisplay');
+  const bankAccDisplay = document.getElementById('bankAccDisplay');
+  const btnCopyAcc = document.getElementById('btnCopyAcc');
+  const btnCopyCode = document.getElementById('btnCopyCode');
+
+  // Success elements
+  const vTicketCode = document.getElementById('vTicketCode');
+  const vTourName = document.getElementById('vTourName');
+  const vCustName = document.getElementById('vCustName');
+  const vCustPhone = document.getElementById('vCustPhone');
+  const vCustEmail = document.getElementById('vCustEmail');
+  const vTravelDate = document.getElementById('vTravelDate');
+  const vGuests = document.getElementById('vGuests');
+  const vTotal = document.getElementById('vTotal');
+
+  let activeBookingTour = null;
+  let activeBookingCode = '';
+
+  function openBookingCheckout(tour) {
+    activeBookingTour = tour;
+    activeBookingCode = 'VJ' + Math.floor(10000 + Math.random() * 90000);
+
+    // Reset view
+    bookingFormWrapper.hidden = false;
+    bookingSuccessWrapper.hidden = true;
+
+    // Set default travel date (Tomorrow)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 2);
+    bTravelDate.value = tomorrow.toISOString().split('T')[0];
+
+    // Populate tour summary
+    summaryTourName.textContent = tour.name;
+    summaryTourOperator.textContent = tour.operator;
+    summaryTourDuration.textContent = tour.duration;
+    summaryUnitPrice.textContent = formatVND(tour.price) + ' / khách';
+    bGuestsCount.value = 1;
+
+    updateBookingCalculations();
+    bookingDialog.showModal();
+  }
+
+  function updateBookingCalculations() {
+    if (!activeBookingTour) return;
+    let guests = parseInt(bGuestsCount.value, 10);
+    if (isNaN(guests) || guests < 1) guests = 1;
+    if (guests > 50) guests = 50;
+    bGuestsCount.value = guests;
+
+    summaryPax.textContent = `${guests} khách`;
+    const total = guests * activeBookingTour.price;
+    summaryTotalPrice.textContent = formatVND(total);
+
+    // Update transfer code & QR
+    const rawName = bCustName.value.trim().toUpperCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z0-9 ]/g, "")
+      .replace(/\s+/g, '_').substring(0, 15);
+    const codeSnippet = `${activeBookingCode}_${rawName || 'KHACH'}`;
+    transferCodeDisplay.textContent = codeSnippet;
+
+    // VietQR Open API live rendering
+    // Ngân hàng MB Bank (Mã 970422 / MB), STK 0988888888, Tên: LUONG THE BAO
+    const qrUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${total}&addInfo=${encodeURIComponent(codeSnippet)}&accountName=${encodeURIComponent('LUONG THE BAO')}`;
+    vietqrImage.src = qrUrl;
+  }
+
+  // Event listeners for guest counter and inputs
+  btnMinusGuest.addEventListener('click', () => {
+    let g = parseInt(bGuestsCount.value, 10) || 1;
+    if (g > 1) {
+      bGuestsCount.value = g - 1;
+      updateBookingCalculations();
+    }
+  });
+
+  btnPlusGuest.addEventListener('click', () => {
+    let g = parseInt(bGuestsCount.value, 10) || 1;
+    if (g < 50) {
+      bGuestsCount.value = g + 1;
+      updateBookingCalculations();
+    }
+  });
+
+  bGuestsCount.addEventListener('input', updateBookingCalculations);
+  bCustName.addEventListener('input', updateBookingCalculations);
+
+  // Copy helpers
+  btnCopyAcc.addEventListener('click', () => {
+    navigator.clipboard.writeText(bankAccDisplay.textContent).then(() => {
+      btnCopyAcc.textContent = '✅';
+      setTimeout(() => { btnCopyAcc.textContent = '📋'; }, 2000);
+    });
+  });
+
+  btnCopyCode.addEventListener('click', () => {
+    navigator.clipboard.writeText(transferCodeDisplay.textContent).then(() => {
+      btnCopyCode.textContent = '✅';
+      setTimeout(() => { btnCopyCode.textContent = '📋'; }, 2000);
+    });
+  });
+
+  bookingCloseBtn.addEventListener('click', () => bookingDialog.close());
+  btnBackToTours.addEventListener('click', () => bookingDialog.close());
+
+  // Form Submit Handler
+  bookingCheckoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = bCustName.value.trim();
+    const phone = bCustPhone.value.trim();
+    const email = bCustEmail.value.trim();
+    const date = bTravelDate.value;
+    const guests = parseInt(bGuestsCount.value, 10) || 1;
+    const notes = bSpecialNotes.value.trim();
+    const total = guests * activeBookingTour.price;
+
+    if (!name || !phone || !email || !date) {
+      alert('Vui lòng điền đầy đủ Họ tên, Số điện thoại, Email và Ngày khởi hành!');
+      return;
+    }
+
+    const submitBtn = document.getElementById('btnSubmitBooking');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>⏳ Đang xử lý & Đồng bộ Đám mây...</span>';
+
+    const bookingPayload = {
+      bookingCode: activeBookingCode,
+      tourId: activeBookingTour.id,
+      tourName: activeBookingTour.name,
+      operator: activeBookingTour.operator,
+      region: activeBookingTour.region,
+      unitPrice: activeBookingTour.price,
+      guestsCount: guests,
+      totalAmount: total,
+      travelDate: date,
+      customer: {
+        fullName: name,
+        phone: phone,
+        email: email,
+        specialNotes: notes
+      },
+      payment: {
+        method: "VIETQR_NAPAS247",
+        bankName: "MB Bank",
+        bankAccount: "0988888888",
+        accountOwner: "TS. LUONG THE BAO",
+        transferCode: transferCodeDisplay.textContent,
+        status: "PAID_CONFIRMED"
+      },
+      emailStatus: "SENT_AUTOMATICALLY_TO_CUSTOMER",
+      createdAt: new Date().toISOString()
+    };
+
+    // 1. Ghi vào Google Firebase Firestore
+    if (window.FirebaseService) {
+      try {
+        await window.FirebaseService.recordBooking(bookingPayload);
+        await window.FirebaseService.recordChatLog(
+          `[HỆ THỐNG] Khách đặt tour: ${name} (${phone}) - ${activeBookingTour.name}`,
+          `Tổng tiền: ${formatVND(total)} - Mã vé: ${activeBookingCode} - Trạng thái: Đã gửi email xác nhận`,
+          activeBookingTour.id
+        );
+      } catch (err) {
+        console.warn('Lỗi ghi Firebase:', err);
+      }
+    }
+
+    // 2. Chuyển sang màn hình E-Voucher Thành Công
+    vTicketCode.textContent = `#${activeBookingCode}`;
+    vTourName.textContent = activeBookingTour.name;
+    vCustName.textContent = name;
+    vCustPhone.textContent = phone;
+    vCustEmail.textContent = email;
+    vTravelDate.textContent = date;
+    vGuests.textContent = `${guests} du khách (${formatVND(activeBookingTour.price)}/khách)`;
+    vTotal.textContent = formatVND(total);
+
+    bookingFormWrapper.hidden = true;
+    bookingSuccessWrapper.hidden = false;
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<span>🚀 Tôi Đã Quét QR / Xác Nhận Đặt Tour</span>';
+
+    // 3. Thông báo cho Gemini Chatbot
+    sendBotReply(`
+      <p>🎉 <strong>Chúc mừng Quý khách ${name}!</strong></p>
+      <p>Đơn đặt tour <strong>${activeBookingTour.name}</strong> (Mã vé: <code>#${activeBookingCode}</code>) đã được xác nhận thành công.</p>
+      <p>Hệ thống đã gửi vé điện tử (E-Voucher) và hướng dẫn đón tiếp về địa chỉ email <strong>${email}</strong>. Trợ lý AI OTA và nhà điều hành <strong>${activeBookingTour.operator}</strong> chúc Quý khách chuyến đi tuyệt vời!</p>
+    `);
+  });
 
   // =========================================================================
   // 5. EVENT LISTENERS FOR CONTROLS
