@@ -862,96 +862,58 @@
        - Góc Phải (Right): Trợ Lý Gemini 3.8 Flash (Native API & Firebase)
        ========================================================================= -->
 
-  <!-- 1. GÓC TRÁI: DIFY.AI CHATFLOW AGENTIC WIDGET -->
+  <!-- 1. GÓC TRÁI: TRỢ LÝ TƯ VẤN DU LỊCH (DIFY CHATFLOW) -->
   <div class="ai-chatbot-dify-widget" id="difyWidgetContainer">
     <!-- Dify Launcher Button -->
-    <button type="button" class="dify-launcher-btn" id="difyLauncherBtn" aria-label="Mở Trợ lý Dify AI" aria-expanded="false">
-      <span style="font-size: 2rem;">🌐</span>
+    <button type="button" class="dify-launcher-btn" id="difyLauncherBtn" aria-label="Mở Trợ lý Du lịch" aria-expanded="false">
+      <span style="font-size: 2rem;">💬</span>
       <span class="online-indicator"></span>
-      <div class="dify-launcher-tooltip">
-        <span>Góc Trái: Trợ Lý Dify AI (Agentic Chatflow)</span>
-      </div>
     </button>
 
-    <!-- Dify Chat Window -->
-    <aside class="dify-window" id="difyWindow" aria-label="Cửa sổ hội thoại Dify AI" hidden>
-      <div class="dify-header">
-        <div class="chat-header-info">
-          <div class="chat-avatar-small" style="background: rgba(255,255,255,0.25);">
-            <span>🌐</span>
-          </div>
-          <div>
-            <h3 class="chat-agent-name">Trợ Lý Dify AI (Agentic Chatflow)</h3>
-            <span class="chat-agent-status" style="color: #bfdbfe;"><span class="status-dot" style="background:#60a5fa;"></span> Mô hình No-code RAG • Dify.ai</span>
-          </div>
-        </div>
-        <div class="chat-header-actions">
-          <a href="https://udify.app/chatbot/HG0SqfA46yYMtZ2h" target="_blank" class="chat-action-btn" title="Mở toàn màn hình" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">↗</a>
-          <button type="button" class="chat-action-btn" id="closeDifyBtn" title="Đóng Dify Chat">✕</button>
-        </div>
-      </div>
-
-      <!-- VLU Greeting Strip -->
-      <div style="background: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;">
-        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; flex-shrink: 0;" alt="VLU Masters">
-        <span style="font-size: 0.78rem; color: #1e40af; font-weight: 700; line-height: 1.2;">
-          🎓 [Góc Trái] Trợ lý Dify AI Chatflow dành cho SV Masters VLU
-        </span>
-      </div>
-
-      <!-- Live Dify Chatbot Iframe -->
+    <!-- Dify Chat Window (100% Pure Native Chatbot UI) -->
+    <aside class="dify-window" id="difyWindow" aria-label="Cửa sổ hội thoại tư vấn" hidden>
+      <button type="button" class="dify-floating-close-btn" id="closeDifyBtn" aria-label="Đóng chat">✕</button>
       <iframe
         src="https://udify.app/chatbot/HG0SqfA46yYMtZ2h"
-        style="width: 100%; height: calc(100% - 95px); border: none; flex-grow: 1;"
+        style="width: 100%; height: 100%; border: none;"
         frameborder="0"
         allow="microphone;clipboard-write">
       </iframe>
     </aside>
   </div>
 
-  <!-- 2. GÓC PHẢI: GOOGLE GEMINI 3.8 FLASH DIRECT WIDGET -->
+  <!-- 2. GÓC PHẢI: TRỢ LÝ TƯ VẤN DU LỊCH (AI CHATBOT) -->
   <div class="ai-chatbot-gemini-widget" id="geminiWidgetContainer">
-    <!-- Gemini Launcher Button -->
-    <button type="button" class="gemini-launcher-btn" id="chatbotLauncherBtn" aria-label="Mở Trợ lý Du Lịch AI" aria-expanded="false">
+    <!-- Launcher Button -->
+    <button type="button" class="gemini-launcher-btn" id="chatbotLauncherBtn" aria-label="Mở Trợ lý Du Lịch" aria-expanded="false">
       <span style="font-size: 2rem;">🤖</span>
       <span class="online-indicator"></span>
-      <div class="gemini-launcher-tooltip">
-        <span>Góc Phải: Trợ Lý Du Lịch AI VietJourneys (Hỗ Trợ 24/7)</span>
-      </div>
     </button>
 
-    <!-- Gemini Chat Window -->
-    <aside class="gemini-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Trợ lý Du Lịch AI" hidden>
+    <!-- Chat Window -->
+    <aside class="gemini-window" id="chatbotWindow" aria-label="Cửa sổ hội thoại Trợ lý Du Lịch" hidden>
       <div class="gemini-header">
         <div class="chat-header-info">
           <div class="chat-avatar-small">
             <span>🤖</span>
           </div>
           <div>
-            <h3 class="chat-agent-name">Trợ Lý Du Lịch AI VietJourneys</h3>
-            <span class="chat-agent-status"><span class="status-dot"></span> Trực Tuyến 24/7 • Kết nối 150+ Lữ Hành</span>
+            <h3 class="chat-agent-name">Trợ Lý Du Lịch</h3>
+            <span class="chat-agent-status"><span class="status-dot"></span> Trực tuyến 24/7</span>
           </div>
         </div>
         <div class="chat-header-actions">
-          <button type="button" class="chat-action-btn" id="clearChatBtn" title="Làm mới chat">🔄</button>
+          <button type="button" class="chat-action-btn" id="clearChatBtn" title="Làm mới cuộc trò chuyện">🔄</button>
           <button type="button" class="chat-action-btn" id="closeChatBtn" title="Thu nhỏ chat">✕</button>
         </div>
       </div>
 
-      <!-- VLU Greeting Strip inside Gemini Widget -->
-      <div style="background: #f0fdf4; border-bottom: 1px solid #bbf7d0; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;">
-        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=100&auto=format&fit=crop&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #22c55e; flex-shrink: 0;" alt="VLU Masters">
-        <span style="font-size: 0.78rem; color: #15803d; font-weight: 700; line-height: 1.2;">
-          🎓 [Góc Phải] Trợ lý Du Lịch AI hỗ trợ SV Masters VLU & Du khách
-        </span>
-      </div>
-
       <!-- Quick Knowledge Pills -->
       <div class="chat-pills-bar">
-        <button type="button" class="chat-pill" data-ask="Gợi ý tour Hạ Long 2N1Đ từ nhà điều hành uy tín">🚢 Hạ Long 2N1Đ</button>
-        <button type="button" class="chat-pill" data-ask="Tìm tour giá dưới 2 triệu">💰 Tour dưới 2tr</button>
-        <button type="button" class="chat-pill" data-ask="Tư vấn tour Côn Đảo viếng mộ Cô Sáu">🕯️ Côn Đảo</button>
-        <button type="button" class="chat-pill" data-ask="Quy trình chuyển booking sang Travel Operator">🔄 Điều phối OTA</button>
+        <button type="button" class="chat-pill" data-ask="Gợi ý tour Hạ Long 2N1Đ từ nhà điều hành uy tín">🚢 Tour Hạ Long</button>
+        <button type="button" class="chat-pill" data-ask="Tìm tour giá dưới 2 triệu">💰 Tour dưới 2 triệu</button>
+        <button type="button" class="chat-pill" data-ask="Tư vấn tour Côn Đảo">🕯️ Tour Côn Đảo</button>
+        <button type="button" class="chat-pill" data-ask="Gợi ý tour Miền Tây sông nước">🌾 Tour Miền Tây</button>
       </div>
 
       <!-- Messages Stream -->
@@ -959,8 +921,8 @@
         <div class="message bot-message">
           <div class="msg-avatar">🤖</div>
           <div class="msg-bubble">
-            <p>Xin chào quý khách! Tôi là <strong>Trợ lý Du Lịch AI VietJourneys</strong> 🇻🇳</p>
-            <p>Tôi luôn sẵn sàng đồng hành hỗ trợ quý khách tư vấn thông tin tour, thiết kế lịch trình cá nhân hóa, tra cứu giá vé và kết nối trực tiếp với <strong>150+ Travel Operators uy tín</strong> khắp Việt Nam 24/7!</p>
+            <p>Xin chào quý khách! Tôi là <strong>Trợ lý Du lịch VietJourneys</strong> 🇻🇳</p>
+            <p>Tôi có thể hỗ trợ quý khách tra cứu thông tin tour, tư vấn lịch trình chi tiết và báo giá tốt nhất. Quý khách muốn đi du lịch ở đâu ạ?</p>
             <span class="msg-time">Vừa xong</span>
           </div>
         </div>
@@ -974,7 +936,6 @@
         </button>
       </form>
     </aside>
-  </div>
   </div>
 
   <!-- FIREBASE SDK & SCRIPTS -->

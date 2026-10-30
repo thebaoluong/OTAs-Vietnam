@@ -382,8 +382,11 @@ document.addEventListener('DOMContentLoaded', () => {
       tourModal.close();
       openChatbot();
       sendBotReply(`
-        <p>Quý khách đang quan tâm đến tour <strong>${tour.name}</strong> của đối tác <strong>${tour.operator}</strong>.</p>
-        <p>Tôi là Trợ lý AI OTA, tôi sẽ hỗ trợ quý khách kết nối trực tiếp với nhà điều hành để cập nhật tình trạng chỗ trống theo thời gian thực. Quý khách dự kiến đi bao nhiêu người?</p>
+        <p>Dạ, em thấy quý khách đang quan tâm đến tour <strong>${tour.name}</strong> (${formatVND(tour.price)}).</p>
+        <p>Quý khách dự kiến khởi hành vào ngày nào và có bao nhiêu người đi cùng ạ? Em sẽ tư vấn chi tiết lịch trình và hỗ trợ mình ngay nhé!</p>
+        <div style="margin-top: 0.6rem;">
+          <button type="button" class="chat-tour-book-btn" data-id="${tour.id}" style="padding: 0.4rem 0.8rem; font-size: 0.82rem; background: #15803d; color: white; border: none; font-weight: 700; border-radius: 6px; cursor: pointer;">💳 Đặt Tour Này Ngay</button>
+        </div>
       `);
     });
 
@@ -778,23 +781,21 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const SYSTEM_INSTRUCTION = `
-Bạn là "Trợ lý AI VietJourneys OTA" - chuyên gia tư vấn du lịch thông minh thuộc sàn lữ hành trực tuyến VietJourneys OTA Marketplace (kết nối mạng lưới tour đa dạng từ 150+ Travel Operators khắp 63 tỉnh thành Việt Nam).
+Bạn là Trợ lý tư vấn du lịch trực tuyến của sàn du lịch VietJourneys.
 
-NHIỆM VỤ CỐT LÕI:
-1. Tư vấn lịch trình, gợi ý tour du lịch theo địa danh, ngân sách, số ngày và sở thích của khách dựa trên dữ liệu được cung cấp.
-2. Mỗi khi gợi ý một tour cụ thể, BẮT BUỘC nêu rõ:
+NHIỆM VỤ CHÍNH:
+1. Tư vấn lịch trình, gợi ý tour du lịch theo địa danh, ngân sách, số ngày và sở thích của khách dựa trên dữ liệu tour thực tế được cung cấp.
+2. Khi gợi ý tour cụ thể, BẮT BUỘC nêu rõ:
    - Tên tour
-   - Mã tour (ví dụ: OTA-VN0001)
-   - Giá niêm yết OTA (bằng VNĐ)
-   - Đơn vị điều hành tour (Travel Operator) phụ trách
-3. Khi khách có nhu cầu đặt tour, hướng dẫn khách cung cấp: Số điện thoại + Ngày khởi hành dự kiến + Số lượng người lớn/trẻ em để hệ thống AI OTA chuyển tiếp booking (dispatch) sang Travel Operator phụ trách giữ chỗ.
-4. Trả lời chính xác chính sách vé trẻ em: Dưới 5 tuổi miễn phí; 5 đến dưới 10 tuổi tính 75%; từ 10 tuổi trở lên tính 100%.
-5. Chính sách dời hủy tour: Trước 20 ngày phí 10% cọc; 10-19 ngày phí 30%; 5-9 ngày phí 50%; 2-4 ngày phí 70%; trong 24h phí 100%.
+   - Giá tour (bằng VNĐ)
+   - Thời lượng tour và nhà điều hành
+3. Trả lời chính xác chính sách vé trẻ em: Dưới 5 tuổi miễn phí; 5 đến dưới 10 tuổi tính 75%; từ 10 tuổi trở lên tính vé người lớn.
+4. Chính sách dời hủy tour: Trước 20 ngày phí 10% cọc; 10-19 ngày phí 30%; 5-9 ngày phí 50%; 2-4 ngày phí 70%; trong 24h phí 100%.
 
-PHONG CÁCH HỘI THOẠI:
-- Luôn thân thiện, niềm nở, hiếu khách, xưng "em/tôi" và gọi khách là "quý khách" hoặc "bạn".
-- Câu trả lời súc tích, định dạng gạch đầu dòng rõ ràng, không dài dòng lan man.
-- Nếu không có thông tin, lịch sự hướng dẫn liên hệ Hotline OTA 1900 6868.
+PHONG CÁCH GIAO TIẾP:
+- Luôn niềm nở, lịch sự, hiếu khách, xưng "em" hoặc "tôi" và gọi khách là "quý khách".
+- Câu trả lời súc tích, định dạng gạch đầu dòng rõ ràng, không lan man.
+- TUYỆT ĐỐI KHÔNG đề cập đến các thuật ngữ kỹ thuật như "Gemini", "AI model", "API", "Firebase", "Firestore", "RAG" hay các thông số lập trình. Giao tiếp tự nhiên như một tư vấn viên du lịch chuyên nghiệp.
 `;
 
   async function callGeminiAI(userQuery, retrievedToursContext) {
@@ -805,7 +806,7 @@ ${retrievedToursContext}
 CÂU HỎI CỦA KHÁCH HÀNG:
 "${userQuery}"
 
-Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cách tự nhiên, chuyên nghiệp và chính xác theo dữ liệu trên.
+Hãy đóng vai Trợ lý du lịch VietJourneys trả lời khách hàng một cách tự nhiên, thân thiện và chính xác theo dữ liệu trên. Tuyệt đối không nhắc tên mô hình kỹ thuật.
 `;
 
     try {
@@ -1001,8 +1002,8 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     typingEl.className = 'message bot-message';
     typingEl.innerHTML = `
       <div class="msg-avatar">🤖</div>
-      <div class="msg-bubble" style="color: #6b7280; font-style: italic;">
-        Trợ lý Google Gemini AI đang phân tích dữ liệu tour và điều phối...
+      <div class="msg-bubble" style="color: #64748b; font-style: italic;">
+        Trợ lý đang kiểm tra thông tin tour...
       </div>
     `;
     chatMessages.appendChild(typingEl);
@@ -1107,8 +1108,8 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     }
 
     return `
-      <p>Cảm ơn quý khách! Nền tảng OTA VietJourneys hiện kết nối mạng lưới tour phong phú từ <strong>150+ Travel Operators</strong> (Hạ Long, Sapa, Hà Giang, Đà Nẵng, Phú Quốc, Côn Đảo, Cần Thơ...).</p>
-      <p>Quý khách vui lòng nhập tên điểm đến (ví dụ: <em>"Hạ Long"</em>, <em>"Đà Lạt"</em>, <em>"Côn Đảo"</em>) hoặc mức giá mong muốn (ví dụ: <em>"tour dưới 2 triệu"</em>) để Trợ lý AI OTA hỗ trợ ngay nhé!</p>
+      <p>Dạ, VietJourneys hiện có rất nhiều hành trình hấp dẫn khắp mọi miền (Hạ Long, Sapa, Đà Nẵng, Phú Quốc, Côn Đảo, Miền Tây...).</p>
+      <p>Quý khách vui lòng nhập tên điểm đến (ví dụ: <em>"Hạ Long"</em>, <em>"Đà Lạt"</em>) hoặc ngân sách dự kiến (ví dụ: <em>"tour dưới 2 triệu"</em>) để em hỗ trợ tư vấn chi tiết cho mình nhé!</p>
     `;
   }
 
