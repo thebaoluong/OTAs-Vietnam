@@ -1220,6 +1220,15 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     kpiTotalBookings.textContent = `${totalCount} đơn`;
     kpiTotalGuests.textContent = `${totalGuests} du khách`;
     kpiAOV.textContent = formatVND(aov);
+
+    // Cập nhật Lượt truy cập và Tỷ lệ chuyển đổi CVR cho Admin
+    const kpiTotalVisits = document.getElementById('kpiTotalVisits');
+    const kpiConversionRate = document.getElementById('kpiConversionRate');
+    if (kpiTotalVisits) kpiTotalVisits.textContent = currentTrafficCount.toLocaleString('vi-VN');
+    if (kpiConversionRate) {
+      const cvr = currentTrafficCount > 0 ? ((totalCount / currentTrafficCount) * 100).toFixed(2) : '0.00';
+      kpiConversionRate.textContent = `${cvr}%`;
+    }
   }
 
   function renderAdminAnalytics(bookings) {
@@ -1381,6 +1390,64 @@ Hãy đóng vai Trợ lý AI VietJourneys OTA trả lời khách hàng một cá
     });
   }
 
-  // Load initial data
+  // =========================================================================
+  // 7. WEBSITE TRAFFIC & VISITOR COUNTER ENGINE (REALTIME CLOUD PERSISTENCE)
+  // =========================================================================
+  let currentTrafficCount = 2848;
+
+  async function initTrafficTracking() {
+    const trafficCountNumber = document.getElementById('trafficCountNumber');
+
+    // 1. Check local storage
+    const cachedCount = localStorage.getItem('vietjourneys_traffic_count');
+    if (cachedCount) {
+      const parsed = parseInt(cachedCount, 10);
+      if (!isNaN(parsed) && parsed > currentTrafficCount) {
+        currentTrafficCount = parsed;
+      }
+    }
+
+    // 2. Count new visit per session
+    const isNewSession = !sessionStorage.getItem('vietjourneys_session_counted');
+    if (isNewSession) {
+      currentTrafficCount += 1;
+      sessionStorage.setItem('vietjourneys_session_counted', 'true');
+      localStorage.setItem('vietjourneys_traffic_count', currentTrafficCount.toString());
+
+      // Attempt to sync to Firebase Firestore
+      if (window.firebase && firebase.apps && firebase.apps.length) {
+        try {
+          const statsDoc = firebase.firestore().collection('site_analytics').doc('traffic');
+          await statsDoc.set({
+            total_visits: firebase.firestore.FieldValue.increment(1),
+            last_visit_at: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        } catch (err) {
+          console.warn('Lỗi ghi traffic Firebase:', err);
+        }
+      }
+    }
+
+    // 3. Try reading cloud count from Firebase
+    if (window.firebase && firebase.apps && firebase.apps.length) {
+      try {
+        const doc = await firebase.firestore().collection('site_analytics').doc('traffic').get();
+        if (doc.exists && doc.data().total_visits) {
+          const cloudVal = doc.data().total_visits;
+          if (cloudVal > currentTrafficCount) {
+            currentTrafficCount = cloudVal;
+            localStorage.setItem('vietjourneys_traffic_count', cloudVal.toString());
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (trafficCountNumber) {
+      trafficCountNumber.textContent = currentTrafficCount.toLocaleString('vi-VN');
+    }
+  }
+
+  // Initialize
+  initTrafficTracking();
   loadToursData();
 });
