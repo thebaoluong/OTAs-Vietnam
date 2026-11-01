@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.allTours = await response.json();
       state.filteredTours = [...state.allTours];
       renderTours();
+      handleInitialUrlParams();
     } catch (err) {
       console.error('Lỗi nạp tour:', err);
       toursGrid.innerHTML = `
@@ -103,6 +104,50 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
   }
+
+  function handleInitialUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    const tourId = params.get('tour') || (hash.startsWith('#tour=') ? hash.replace('#tour=', '') : (hash.startsWith('#tour-') ? hash.replace('#tour-', '') : null));
+    const region = params.get('region');
+    const query = params.get('q');
+
+    if (region) {
+      state.activeRegion = region;
+      tabButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-region') === region);
+      });
+      if (regionFilter) regionFilter.value = region;
+      applyFilters();
+    }
+
+    if (query) {
+      state.searchQuery = query;
+      if (searchInput) searchInput.value = query;
+      applyFilters();
+    }
+
+    if (tourId) {
+      const tour = state.allTours.find(t => t.id.toLowerCase() === tourId.toLowerCase());
+      if (tour) {
+        setTimeout(() => {
+          openTourModal(tour.id);
+        }, 300);
+      }
+    }
+  }
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    const tourId = params.get('tour');
+    if (tourId) {
+      const tour = state.allTours.find(t => t.id.toLowerCase() === tourId.toLowerCase());
+      if (tour && !tourModal.open) openTourModal(tour.id);
+    } else if (tourModal.open) {
+      tourModal.close();
+    }
+  });
 
   // =========================================================================
   // 2. FILTERING, SEARCHING & SORTING
@@ -307,9 +352,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Floating Toast Notification
+  function showToast(message, duration = 3500) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerHTML = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => toast.remove(), 350);
+    }, duration);
+  }
+
   function openTourModal(tourId) {
     const tour = state.allTours.find(t => t.id === tourId);
     if (!tour) return;
+
+    // Update URL with deep link
+    const tourUrl = new URL(window.location.origin + window.location.pathname);
+    tourUrl.searchParams.set('tour', tour.id);
+    window.history.replaceState({ tourId: tour.id }, '', tourUrl.toString());
 
     modalBody.innerHTML = `
       <div class="modal-header-banner">
@@ -359,6 +424,25 @@ document.addEventListener('DOMContentLoaded', () => {
         Được vận hành bởi <strong>${tour.operator}</strong> và bảo chứng chất lượng bởi VietJourneys OTA: Bao gồm xe vận chuyển đời mới, bảo hiểm du lịch Bảo Việt 100.000.000 VNĐ, cam kết đúng lịch trình và không phụ thu ẩn.
       </p>
 
+      <!-- SOCIAL SHARE BAR -->
+      <div class="modal-share-bar">
+        <span class="modal-share-label">📢 Chia sẻ tour cho bạn bè:</span>
+        <div class="modal-share-actions">
+          <button type="button" class="btn-share-social zalo" id="shareZaloBtn" title="Chia sẻ qua Zalo">
+            <span class="share-icon">💬</span> Zalo
+          </button>
+          <button type="button" class="btn-share-social facebook" id="shareFbBtn" title="Chia sẻ lên Facebook">
+            <span class="share-icon">📘</span> Facebook
+          </button>
+          <button type="button" class="btn-share-social copy" id="copyTourLinkBtn" title="Sao chép link tour">
+            <span class="share-icon">🔗</span> Sao Chép Link
+          </button>
+          <button type="button" class="btn-share-social native" id="nativeShareBtn" title="Gửi nhóm">
+            <span class="share-icon">📤</span> Gửi Nhóm
+          </button>
+        </div>
+      </div>
+
       <div class="modal-book-box">
         <div>
           <span style="font-size: 0.8rem; color: #6b7280; display: block;">Giá trọn gói đảm bảo</span>
@@ -374,6 +458,50 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
+
+    // Social Sharing Event Handlers
+    const fullShareUrl = window.location.origin + window.location.pathname + `?tour=${tour.id}`;
+    const shareText = `Khám phá tour ${tour.name} giá chỉ ${formatVND(tour.price)} trên VietJourneys OTA!`;
+
+    document.getElementById('copyTourLinkBtn')?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(fullShareUrl);
+        showToast('✨ <strong>Đã sao chép link tour!</strong> Bạn có thể dán vào Zalo hoặc Messenger để gửi cho bạn bè.');
+      } catch (err) {
+        showToast(`🔗 Link tour: ${fullShareUrl}`);
+      }
+    });
+
+    document.getElementById('shareZaloBtn')?.addEventListener('click', () => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${shareText}\nXem chi tiết tại: ${fullShareUrl}`).catch(() => {});
+      }
+      showToast('✨ Đã sao chép tin nhắn giới thiệu tour! Đang mở Zalo...');
+      setTimeout(() => {
+        window.open(`https://sp.zalo.me/share_inline?link=${encodeURIComponent(fullShareUrl)}`, '_blank');
+      }, 500);
+    });
+
+    document.getElementById('shareFbBtn')?.addEventListener('click', () => {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullShareUrl)}`, '_blank', 'width=600,height=500');
+    });
+
+    document.getElementById('nativeShareBtn')?.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: tour.name,
+            text: shareText,
+            url: fullShareUrl
+          });
+        } catch (e) {}
+      } else {
+        try {
+          await navigator.clipboard.writeText(fullShareUrl);
+          showToast('✨ <strong>Đã sao chép link tour!</strong> Bạn có thể gửi link này cho nhóm bạn.');
+        } catch (e) {}
+      }
+    });
 
     // Nút mở form đặt tour & VietQR
     document.getElementById('modalBookNowBtn').addEventListener('click', () => {
@@ -391,7 +519,17 @@ document.addEventListener('DOMContentLoaded', () => {
     tourModal.showModal();
   }
 
-  modalCloseBtn.addEventListener('click', () => tourModal.close());
+  function cleanTourUrl() {
+    const cleanUrl = new URL(window.location.origin + window.location.pathname);
+    window.history.replaceState({}, '', cleanUrl.toString());
+  }
+
+  modalCloseBtn.addEventListener('click', () => {
+    tourModal.close();
+    cleanTourUrl();
+  });
+
+  tourModal.addEventListener('close', cleanTourUrl);
 
   // Click outside to dismiss modal (Graceful degradation for browsers lacking closedby="any")
   if (!('closedBy' in HTMLDialogElement.prototype)) {

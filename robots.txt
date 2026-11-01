@@ -1,0 +1,6 @@
+# robots.txt for VietJourneys OTA Marketplace (https://otasvietnam.vercel.app)
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://otasvietnam.vercel.app/sitemap.xml
